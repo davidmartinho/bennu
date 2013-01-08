@@ -1,0 +1,226 @@
+package pt.ist.bennu.core.domain;
+
+/*
+ * @(#)bennu-core.dml
+ *
+ * Copyright 2009 Instituto Superior Tecnico
+ * Founding Authors: João Figueiredo, Luis Cruz, Paulo Abrantes, Susana Fernandes
+ * 
+ *      https://fenix-ashes.ist.utl.pt/
+ * 
+ *   This file is part of the Bennu web application infrastructure.
+ *
+ *   Bennu is free software: you can redistribute it and/or modify
+ *   it under the terms of the GNU Lesser General Public License as published
+ *   by the Free Software Foundation, either version 3 of the License, or
+ *   (at your option) any later version.*
+ *
+ *   Bennu is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ *   GNU Lesser General Public License for more details.
+ *
+ *   You should have received a copy of the GNU Lesser General Public License
+ *   along with Bennu. If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+
+valueType pt.utl.ist.fenix.tools.util.i18n.MultiLanguageString as MultiLanguageString {
+    externalizeWith {
+        String exportAsString();
+    }
+
+    internalizeWith importFromString();
+}
+
+class Bennu {
+}
+
+class User {
+	String username  (REQUIRED);
+	String password;
+	DateTime created;
+	DateTime lastLogoutDateTime;
+	DateTime expiration;
+	String email;
+}
+
+relation SystemUsers {
+	Bennu playsRole bennu {
+		multiplicity 1..1;
+	}
+	User playsRole users {
+		multiplicity *;
+	}
+}
+
+/* Authorization Groups */
+
+class groups.PersistentGroup {
+	DateTime created (REQUIRED);
+}
+
+relation PersistentGroups {
+	Bennu playsRole bennu {
+		multiplicity 1..1;
+	}
+	groups.PersistentGroup playsRole groups {
+		multiplicity *;
+	}
+}
+
+relation PersistentGroupCreator {
+	User playsRole creator {
+		multiplicity 1..1;
+	}
+	groups.PersistentGroup playsRole {
+		multiplicity *;
+	}
+}
+
+relation SystemGroups {
+	Bennu playsRole system {
+		multiplicity 0..1;
+	}
+	groups.PersistentGroup playsRole systemGroups {
+		multiplicity *;
+	}
+}
+
+class groups.immutable.ImmutableGroup extends groups.PersistentGroup {
+}
+
+class groups.immutable.EmptyGroup extends groups.immutable.ImmutableGroup {
+}
+
+class groups.immutable.AnonymousGroup extends groups.immutable.ImmutableGroup {
+}
+
+class groups.immutable.AnyoneGroup extends groups.immutable.ImmutableGroup {
+}
+
+class groups.immutable.UserGroup extends groups.immutable.ImmutableGroup {
+}
+
+class groups.immutable.ManagerGroup extends groups.immutable.ImmutableGroup {
+}
+
+relation ManagerGroupPeople {
+	groups.immutable.ManagerGroup playsRole {
+		multiplicity 0..1;
+	}
+	groups.PersistentGroup playsRole managerGroup {
+		multiplicity 1..1;
+	}
+}
+
+class groups.SingleUserGroup extends groups.PersistentGroup {
+}
+
+relation UserSingleUserGroup {
+	groups.SingleUserGroup playsRole singleUserGroup {
+		multiplicity 0..1;
+	}
+	User playsRole user {
+		multiplicity 1..1;
+	}
+}
+
+class groups.mutable.MutableGroup extends groups.PersistentGroup {
+	String name;
+}
+
+relation MutableGroupHistoric {
+	groups.mutable.MutableGroup playsRole next {
+		multiplicity 0..1;
+	}
+	groups.mutable.MutableGroup playsRole previous {
+		multiplicity 0..1;
+	}
+}
+
+class groups.mutable.PeopleGroup extends groups.mutable.MutableGroup {
+}
+
+relation PeopleGroupMembers {
+	groups.mutable.PeopleGroup playsRole peopleGroups {
+		multiplicity *;
+	}
+	User playsRole member {
+		multiplicity *;
+	}
+}
+
+class groups.mutable.UnionGroup extends groups.mutable.MutableGroup {
+}
+
+relation PersistentGroupUnionGroup {
+	groups.PersistentGroup playsRole persistentGroups {
+		multiplicity 1..*;
+	}
+	groups.mutable.UnionGroup playsRole unionGroups {
+		multiplicity *;
+	}
+}
+
+class groups.mutable.IntersectionGroup extends groups.mutable.MutableGroup {
+}
+
+relation PersistentGroupIntersectionGroup {
+	groups.PersistentGroup playsRole persistentGroups {
+		multiplicity 1..*;
+	}
+	groups.mutable.IntersectionGroup playsRole intersectionGroups {
+		multiplicity *;
+	}
+}
+
+class groups.mutable.NegationGroup extends groups.mutable.MutableGroup {
+}
+
+relation PersistentGroupNegationGroup {
+	groups.PersistentGroup playsRole persistentGroup {
+		multiplicity 1..1;
+	}
+	groups.mutable.NegationGroup playsRole negationGroups {
+		multiplicity *;
+	}
+}
+
+/* Password Recovery */
+class PasswordRecoveryRequest {
+	DateTime requested;
+	String verificationHash;
+	DateTime consumed;
+}
+
+relation UserPasswordRecoveryRequest {
+	User playsRole user;
+	PasswordRecoveryRequest playsRole passwordRecoveryRequest;
+}
+
+relation PasswordRecoveryRequestPasswordRecoveryRequest {
+	PasswordRecoveryRequest playsRole previous;
+	PasswordRecoveryRequest playsRole next;
+}
+
+/* Virtual Hosting */
+class VirtualHost {
+	String hostname;
+	MultiLanguageString applicationTitle;
+	MultiLanguageString htmlTitle;
+	MultiLanguageString applicationSubTitle;
+	MultiLanguageString applicationCopyright;
+	String supportEmailAddress;
+	String systemEmailAddress;
+	String supportedLanguages;
+}
+
+relation SystemHosts {
+	Bennu playsRole bennu {
+		multiplicity 1..1;
+	}
+	VirtualHost playsRole virtualHosts {
+		multiplicity *;
+	}
+}
