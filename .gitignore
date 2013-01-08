@@ -5,4 +5,8 @@
 *.war
 *.ear
 
-.settings
+.settings/
+.serviceAnnotationLog
+
+# Maven #
+target/
