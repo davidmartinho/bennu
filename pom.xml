@@ -16,5 +16,6 @@
         <module>bennu-project</module>
         <module>bennu-service</module>
         <module>bennu-core</module>
+		<module>bennu-dispatch</module>
     </modules>
 </project>
