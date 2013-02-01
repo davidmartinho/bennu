@@ -1,25 +1,13 @@
-package pt.ist.bennu.bennu.core.rest.serializer;
+package pt.ist.bennu.bennu.core.rest.mapper;
 
-import pt.ist.bennu.bennu.core.rest.BennuRestError;
-import pt.ist.bennu.bennu.core.rest.RestException;
-import pt.ist.bennu.core.domain.User;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 
-public class JsonSerializer implements Serializer {
+public class AbstractJsonSerializer implements Serializer {
 
-	private final Gson gson;
+	private Gson gson;
 	private Serializer delegate;
-
-	public JsonSerializer() {
-		GsonBuilder builder = new GsonBuilder();
-		builder.registerTypeAdapter(User.class, new UserSerializer());
-		builder.registerTypeAdapter(CasConfigContextSerializer.class, new CasConfigContextSerializer());
-		this.gson = builder.create();
-		this.delegate = null;
-	}
 
 	@Override
 	public final String serialize(Object object) {
@@ -49,6 +37,10 @@ public class JsonSerializer implements Serializer {
 				throw new RestException(BennuRestError.SERIALIZER_NOT_FOUND);
 			}
 		}
+	}
+
+	public void setGson(Gson gson) {
+		this.gson = gson;
 	}
 
 	@Override
