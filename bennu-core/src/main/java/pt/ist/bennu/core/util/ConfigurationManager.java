@@ -41,7 +41,8 @@ import pt.ist.fenixframework.project.DmlFile;
 import pt.ist.fenixframework.project.exception.FenixFrameworkProjectException;
 
 public class ConfigurationManager {
-	private static final Logger logger = LoggerFactory.getLogger(ConfigurationManager.class);
+
+	private static final Logger LOG = LoggerFactory.getLogger(ConfigurationManager.class);
 
 	private static final Properties properties = new Properties();
 
@@ -124,10 +125,10 @@ public class ConfigurationManager {
 		try {
 			final List<FenixFrameworkArtifact> artifacts = FenixFrameworkArtifact.fromName(getProperty("app.name"))
 					.getArtifacts();
-			logger.info("Search for promissing rest endpoints packages:");
+			LOG.info("Search for promissing rest endpoints packages:");
 			for (FenixFrameworkArtifact artifact : artifacts) {
 				final String packageName = String.format("pt.ist.bennu.%s.rest", artifact.getName().replace("-", "."));
-				logger.info("\tpackage {}", packageName);
+				LOG.info("\tpackage {}", packageName);
 				rootClassPackages.add(packageName);
 			}
 		} catch (IOException | FenixFrameworkProjectException e) {
