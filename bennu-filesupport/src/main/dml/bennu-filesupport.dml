@@ -32,17 +32,12 @@ relation BennuFileSupport {
 }
 
 class GenericFile {
-	Long size;
-	DateTime creationDate;
-	String filename;
+	DateTime creationDate (REQUIRED);
+	String filename (REQUIRED);
+	Long size (REQUIRED);
 	String displayName;
 	String contentType;
 	String contentKey;
-}
-
-class FileRawData {
-	String contentKey;
-	bytearray content;
 }
 
 class LocalFileToDelete {
@@ -52,20 +47,27 @@ class LocalFileToDelete {
 class FileStorage {
 	String name;
 }
-	class DomainStorage extends FileStorage{
+
+class DomainStorage extends FileStorage;
+
+class FileRawData {
+	String contentKey;
+	bytearray content;
+}
+
+relation DomainStorageRawData {
+	DomainStorage playsRole storage {
+		multiplicity 1..1;
 	}
-	class DBStorage extends FileStorage{
-		String host;
-		Integer port;
-		String dbName;
-		String tableName;
-		String username;
-		String password;
+	FileRawData playsRole fileRawDatas {
+		multiplicity *;
 	}
-	class LocalFileSystemStorage extends FileStorage{
-		String path;
-		Integer treeDirectoriesNameLength;
-	}	
+}
+
+class LocalFileSystemStorage extends FileStorage {
+	String path;
+	Integer treeDirectoriesNameLength;
+}	
 
 class FileStorageConfiguration {
 	String fileType;
@@ -74,7 +76,7 @@ class FileStorageConfiguration {
 relation FileStorageFile {
 	GenericFile playsRole files {
 		multiplicity *;
-	}	
+	}
 	FileStorage playsRole storage;
 }
 
@@ -88,13 +90,6 @@ relation FileStorageConfigurationFileStorage {
 relation FilePluginRootGenericFile {
 	FileSupport playsRole fileSupport;
 	GenericFile playsRole genericFiles {
-		multiplicity *;
-	}
-}
-
-relation FilePluginRootFileRawDatat {
-	FileSupport playsRole fileSupport;
-	FileRawData playsRole fileRawDatas {
 		multiplicity *;
 	}
 }

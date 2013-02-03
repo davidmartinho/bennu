@@ -10,15 +10,13 @@ import java.util.List;
 
 import javax.activation.MimetypesFileTypeMap;
 
-import jvstm.TransactionalCommand;
-
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 
+import pt.ist.bennu.service.Service;
 import pt.ist.fenixframework.FFDomainException;
-import pt.ist.fenixframework.pstm.Transaction;
 
 /**
  * 
@@ -73,16 +71,6 @@ abstract public class GenericFile extends GenericFile_Base {
 		return getStorage().readAsInputStream(getContentKey());
 	}
 
-	private void updateFileStorage() {
-		Transaction.withTransaction(new TransactionalCommand() {
-
-			@Override
-			public void doIt() {
-				setContent(getContent());
-			}
-		});
-	}
-
 	/**
 	 * 
 	 * @param algorithm
@@ -124,7 +112,6 @@ abstract public class GenericFile extends GenericFile_Base {
 	 */
 	public String getHexSHA256MessageDigest() {
 		return Hex.encodeHexString(getSHA256MessageDigest());
-
 	}
 
 	/**
@@ -135,11 +122,9 @@ abstract public class GenericFile extends GenericFile_Base {
 	 */
 	public String getHexSHA1MessageDigest() {
 		return Hex.encodeHexString(getSHA1MessageDigest());
-
 	}
 
 	public static void convertFileStorages(final FileStorage fileStorageToUpdate) {
-
 		if (fileStorageToUpdate != null) {
 			try {
 				for (final GenericFile genericFile : FileSupport.getInstance().getGenericFiles()) {
@@ -155,6 +140,11 @@ abstract public class GenericFile extends GenericFile_Base {
 		}
 	}
 
+	@Service
+	private void updateFileStorage() {
+		setContent(getContent());
+	}
+
 	private FileStorage getFileStorage() {
 		final FileStorage fileStorage = FileStorageConfiguration.readFileStorageByFileType(getClass().getName());
 		if (fileStorage == null) {
@@ -165,18 +155,6 @@ abstract public class GenericFile extends GenericFile_Base {
 
 	protected String guessContentType(final String filename) {
 		return new MimetypesFileTypeMap().getContentType(filename);
-	}
-
-	public void deleteService() {
-		Transaction.withTransaction(new TransactionalCommand() {
-
-			@Override
-			public void doIt() {
-				delete();
-			}
-
-		});
-
 	}
 
 	public void delete() {

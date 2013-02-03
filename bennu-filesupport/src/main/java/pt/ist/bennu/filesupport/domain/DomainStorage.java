@@ -30,7 +30,7 @@ public class DomainStorage extends DomainStorage_Base {
 		}
 
 		if (content != null) {
-			return new FileRawData(uniqueIdentification, content).getExternalId();
+			return new FileRawData(this, uniqueIdentification, content).getExternalId();
 		}
 		return null;
 	}

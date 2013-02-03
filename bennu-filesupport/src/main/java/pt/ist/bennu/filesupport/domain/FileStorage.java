@@ -28,11 +28,6 @@ abstract public class FileStorage extends FileStorage_Base {
 		return new LocalFileSystemStorage(name, path, treeDirectoriesNameLength);
 	}
 
-	public static DBStorage createNewDatabaseStorage(String name, String host, Integer port, String dbName, String tableName,
-			String username, String password) {
-		return new DBStorage(name, host, port, dbName, tableName, username, password);
-	}
-
 	public void delete() {
 		if (isCanBeDeleted()) {
 			getConfigurations().clear();
