@@ -4,7 +4,8 @@ import java.util.ArrayList;
 
 import jvstm.TransactionalCommand;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pt.ist.bennu.filesupport.domain.FileSupport;
 import pt.ist.bennu.filesupport.domain.LocalFileToDelete;
@@ -13,7 +14,7 @@ import pt.ist.fenixframework.pstm.Transaction;
 public class FileDeleterThread implements Runnable {
 
 	private static final long SLEEP_TIME = 300000;
-	private static final Logger logger = Logger.getLogger(FileDeleterThread.class.getName());
+	private static final Logger logger = LoggerFactory.getLogger(FileDeleterThread.class);
 
 	@Override
 	public void run() {
@@ -40,7 +41,6 @@ public class FileDeleterThread implements Runnable {
 						logger.debug("Failed to delete file", e);
 					}
 				}
-
 			}
 		});
 	}
