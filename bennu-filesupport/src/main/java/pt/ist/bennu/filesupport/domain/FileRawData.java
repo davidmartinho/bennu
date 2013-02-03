@@ -1,6 +1,5 @@
 package pt.ist.bennu.filesupport.domain;
 
-import pt.ist.bennu.filesupport.util.ByteArray;
 
 /**
  * 
@@ -16,7 +15,7 @@ public class FileRawData extends FileRawData_Base {
 
 	public FileRawData(String uniqueIdentification, byte[] content) {
 		this();
-		setContent(new ByteArray(content));
+		setContent(content);
 		setContentKey(uniqueIdentification);
 	}
 

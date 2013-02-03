@@ -20,12 +20,6 @@
  */
 package pt.ist.bennu.filesupport.domain;
 
-valueType pt.ist.bennu.filesupport.util.ByteArray as ByteArray {
-    externalizeWith {
-        bytearray getBytes();
-    }
-}
-
 class FileSupport;
 
 relation BennuFileSupport {
@@ -48,7 +42,7 @@ class GenericFile {
 
 class FileRawData {
 	String contentKey;
-	ByteArray content;
+	bytearray content;
 }
 
 class LocalFileToDelete {
