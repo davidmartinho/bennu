@@ -25,7 +25,7 @@ public class DomainStorage extends DomainStorage_Base {
 	@Override
 	public String store(String uniqueIdentification, byte[] content) {
 		final DomainObject existingRawData = AbstractDomainObject.fromExternalId(uniqueIdentification);
-		if (existingRawData instanceof FileRawData && existingRawData != null) {
+		if (existingRawData instanceof FileRawData) {
 			((FileRawData) existingRawData).delete();
 		}
 
@@ -45,9 +45,4 @@ public class DomainStorage extends DomainStorage_Base {
 	public InputStream readAsInputStream(String uniqueIdentification) {
 		return new ByteArrayInputStream(read(uniqueIdentification));
 	}
-
-	// @Override
-	// public Collection<Pair<String, String>> getPresentationDetails() {
-	// return Collections.EMPTY_LIST;
-	// }
 }

@@ -74,7 +74,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 
 			Map<String, FileWriteIntention> map = getPerTxBox().get();
 			if (map == null) {
-				map = new HashMap<String, FileWriteIntention>();
+				map = new HashMap<>();
 				fileIntentions.put(map);
 			}
 			if (map.containsKey(uniqueIdentification)) {
@@ -98,8 +98,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 
 			// Replace all occurrences of pattern in input
 			StringBuffer result = new StringBuffer();
-			boolean found = false;
-			while ((found = matcher.find())) {
+			while (matcher.find()) {
 				String replaceStr = StringUtils.strip(matcher.group(), "{}");
 				matcher.appendReplacement(result, System.getProperty(replaceStr));
 			}
@@ -174,20 +173,4 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 		}
 		return fileIntentions;
 	}
-
-	// @Override
-	// public Collection<Pair<String, String>> getPresentationDetails() {
-	// List<Pair<String, String>> result = new ArrayList<Pair<String,
-	// String>>();
-	// result.add(new Pair<String,
-	// String>(BundleUtil.getStringFromResourceBundle("resources.FileSupportResources",
-	// "label.localFileSystemStorage.path"), getPath()));
-	// result.add(new Pair<String,
-	// String>(BundleUtil.getStringFromResourceBundle("resources.FileSupportResources",
-	// "label.localFileSystemStorage.treeDirectoriesNameLength"),
-	// getTreeDirectoriesNameLength() != null ?
-	// getTreeDirectoriesNameLength().toString() : ""));
-	// return result;
-	// }
-
 }

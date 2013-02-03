@@ -20,23 +20,19 @@ abstract public class FileStorage extends FileStorage_Base {
 
 	abstract public InputStream readAsInputStream(String uniqueIdentification);
 
-	// @Service
 	public static DomainStorage createNewDomainStorage(final String name) {
 		return new DomainStorage(name);
 	}
 
-	// @Service
 	public static LocalFileSystemStorage createNewFileSystemStorage(String name, String path, Integer treeDirectoriesNameLength) {
 		return new LocalFileSystemStorage(name, path, treeDirectoriesNameLength);
 	}
 
-	// @Service
 	public static DBStorage createNewDatabaseStorage(String name, String host, Integer port, String dbName, String tableName,
 			String username, String password) {
 		return new DBStorage(name, host, port, dbName, tableName, username, password);
 	}
 
-	// @Service
 	public void delete() {
 		if (isCanBeDeleted()) {
 			getConfigurations().clear();
@@ -48,7 +44,4 @@ abstract public class FileStorage extends FileStorage_Base {
 	public boolean isCanBeDeleted() {
 		return getFilesCount() == 0;
 	}
-
-	// abstract public Collection<Pair<String, String>>
-	// getPresentationDetails();
 }

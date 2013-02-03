@@ -29,10 +29,9 @@ public class FileDeleterThread implements Runnable {
 
 	private void process() {
 		Transaction.withTransaction(new TransactionalCommand() {
-
 			@Override
 			public void doIt() {
-				for (final LocalFileToDelete localFileToDelete : new ArrayList<LocalFileToDelete>(FileSupport.getInstance()
+				for (final LocalFileToDelete localFileToDelete : new ArrayList<>(FileSupport.getInstance()
 						.getLocalFilesToDelete())) {
 					logger.info("Deleting: " + localFileToDelete.getFilePath());
 					try {
@@ -43,7 +42,6 @@ public class FileDeleterThread implements Runnable {
 				}
 
 			}
-
 		});
 	}
 }
