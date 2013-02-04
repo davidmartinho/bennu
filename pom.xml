@@ -17,5 +17,6 @@
         <module>bennu-core</module>
 		<module>bennu-dispatch</module>
     <module>bennu-filesupport</module>
+    <module>bennu-search</module>
   </modules>
 </project>

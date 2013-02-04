@@ -71,7 +71,7 @@
 		<version.joda.time.joda.time.jsptags>1.1.1</version.joda.time.joda.time.jsptags>
 		<version.jasperreports.jasperreports.javaflow>3.6.0</version.jasperreports.jasperreports.javaflow>
 		<version.log4j.log4j>1.2.16</version.log4j.log4j>
-		<version.org.apache.lucene.lucene.core>3.5.0</version.org.apache.lucene.lucene.core>
+		<version.org.apache.lucene.lucene.core>3.6.1</version.org.apache.lucene.lucene.core>
 		<version.org.apache.pdfbox.pdfbox>1.6.0</version.org.apache.pdfbox.pdfbox>
 		<version.org.apache.poi.poi>3.5-beta5</version.org.apache.poi.poi>
 		<version.org.apache.poi.poi.contrib>3.5-beta5</version.org.apache.poi.poi.contrib>
