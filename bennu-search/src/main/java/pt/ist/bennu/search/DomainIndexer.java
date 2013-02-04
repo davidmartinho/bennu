@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.lucene.analysis.standard.StandardAnalyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
@@ -27,6 +26,8 @@ import org.apache.lucene.util.Version;
 import pt.ist.bennu.core.util.ConfigurationManager;
 import pt.ist.bennu.search.queryBuilder.dsl.DSLState;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
+
+import com.google.common.base.CharMatcher;
 
 /**
  * DomainIndexer is the core of this plugin. This is a singleton class that
@@ -207,7 +208,7 @@ public class DomainIndexer {
 		Matcher matcher = Pattern.compile("(\\{.+?\\})").matcher(basedir);
 		StringBuffer result = new StringBuffer();
 		while (matcher.find()) {
-			String replaceStr = StringUtils.strip(matcher.group(), "{}");
+			String replaceStr = CharMatcher.anyOf("{}").trimFrom(matcher.group());
 			matcher.appendReplacement(result, System.getProperty(replaceStr));
 		}
 		matcher.appendTail(result);

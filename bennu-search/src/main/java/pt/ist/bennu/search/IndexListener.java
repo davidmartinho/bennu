@@ -5,14 +5,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import pt.ist.fenixframework.DomainObject;
 import pt.ist.fenixframework.pstm.CommitListener;
 import pt.ist.fenixframework.pstm.TopLevelTransaction;
 
 public class IndexListener implements CommitListener {
-	private static Logger logger = Logger.getLogger(IndexListener.class);
+	private static Logger logger = LoggerFactory.getLogger(IndexListener.class);
 
 	@Override
 	public void beforeCommit(TopLevelTransaction topLevelTransaction) {
