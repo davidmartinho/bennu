@@ -1,15 +1,17 @@
 package pt.ist.bennu.bennu.core.rest.serializer;
 
 import java.lang.reflect.Type;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pt.ist.bennu.bennu.core.rest.AbstractResource.CasConfigContext;
-import pt.ist.bennu.bennu.core.rest.BennuRestError;
-import pt.ist.bennu.bennu.core.rest.RestException;
+import pt.ist.bennu.bennu.core.rest.mapper.BennuRestError;
+import pt.ist.bennu.bennu.core.rest.mapper.CasConfigContextSerializer;
+import pt.ist.bennu.bennu.core.rest.mapper.Deserializer;
+import pt.ist.bennu.bennu.core.rest.mapper.RestException;
+import pt.ist.bennu.bennu.core.rest.mapper.Serializer;
+import pt.ist.bennu.bennu.core.rest.mapper.UserSerializer;
 import pt.ist.bennu.core.domain.User;
 import pt.ist.fenixframework.pstm.AbstractDomainObject;
 
