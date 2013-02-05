@@ -24,5 +24,5 @@ import pt.ist.bennu.core.domain.User;
  * 
  */
 public interface AuthenticationListener {
-	public void afterLogin(final User user);
+    public void afterLogin(final User user);
 }
