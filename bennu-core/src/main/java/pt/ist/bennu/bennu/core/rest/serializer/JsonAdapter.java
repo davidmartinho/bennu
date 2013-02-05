@@ -33,12 +33,11 @@ public class JsonAdapter implements Serializer, Deserializer {
 		registerTypeAdapter(CasConfigContext.class, new CasConfigContextSerializer());
 	}
 
-	
 	private Gson gson;
 
 	private JsonAdapter() {
 	}
-	
+
 	private Gson getGson() {
 		if (gson == null) {
 			gson = builder.create();

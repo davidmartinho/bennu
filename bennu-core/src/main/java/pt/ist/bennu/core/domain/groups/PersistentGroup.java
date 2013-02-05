@@ -1,22 +1,18 @@
 /*
  * PersistentGroup.java
- *
+ * 
  * Copyright (c) 2013, Instituto Superior Técnico. All rights reserved.
- *
+ * 
  * This file is part of bennu-core.
- *
- * bennu-core is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * bennu-core is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with bennu-core.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ * bennu-core is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ * 
+ * bennu-core is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License along with bennu-core. If not, see
+ * <http://www.gnu.org/licenses/>.
  */
 package pt.ist.bennu.core.domain.groups;
 
@@ -92,7 +88,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Same as {@link #getMembers()} but at a given moment in time. This is like a time-machine for the groups domain.
 	 * 
-	 * @param when moment when to fetch the user list.
+	 * @param when
+	 *            moment when to fetch the user list.
 	 * @return all member users in the system at the requested moment
 	 */
 	public abstract Set<User> getMembers(DateTime when);
@@ -100,7 +97,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Tests if the given user is a member of the group.
 	 * 
-	 * @param user the user to test
+	 * @param user
+	 *            the user to test
 	 * @return <code>true</code> if member, <code>false</code> otherwise
 	 * 
 	 * @see #verify()
@@ -110,8 +108,10 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Same as {@link #isMember(User)} but at a given moment in time. This is like a time-machine for the groups domain.
 	 * 
-	 * @param user the user to test
-	 * @param when moment when to test the user.
+	 * @param user
+	 *            the user to test
+	 * @param when
+	 *            moment when to test the user.
 	 * @return <code>true</code> if member, <code>false</code> otherwise
 	 */
 	public abstract boolean isMember(User user, DateTime when);
@@ -119,7 +119,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Tests if the given user is a member of the group, throwing an exception if not.
 	 * 
-	 * @throws AuthorizationException if user is not a member of the group.
+	 * @throws AuthorizationException
+	 *             if user is not a member of the group.
 	 */
 	public void verify() throws AuthorizationException {
 		if (!isMember(UserView.getUser())) {
@@ -130,7 +131,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Intersect with given group. Returns the resulting group without changing {@code this} or the argument.
 	 * 
-	 * @param group group to intersect with
+	 * @param group
+	 *            group to intersect with
 	 * @return group resulting of the intersection between '{@code this}' and '{@code group}'
 	 */
 	public PersistentGroup and(PersistentGroup group) {
@@ -143,7 +145,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Unite with given group. Returns the resulting group without changing {@code this} or the argument.
 	 * 
-	 * @param group group to unite with
+	 * @param group
+	 *            group to unite with
 	 * @return group resulting of the union between '{@code this}' and '{@code group}'
 	 */
 	public PersistentGroup or(PersistentGroup group) {
@@ -156,7 +159,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Subtract with given group. Returns the resulting group without changing {@code this} or the argument.
 	 * 
-	 * @param group group to subtract with
+	 * @param group
+	 *            group to subtract with
 	 * @return group resulting of all members of '{@code this}' except members of '{@code group}'
 	 */
 	public PersistentGroup minus(PersistentGroup group) {
@@ -178,7 +182,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Grants access to the given user. Returns the resulting group without changing {@code this}.
 	 * 
-	 * @param user user to grant access to
+	 * @param user
+	 *            user to grant access to
 	 * @return group resulting of the union between '{@code this}' and the group of the given user
 	 */
 	public PersistentGroup grant(User user) {
@@ -188,7 +193,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Revokes access to the given user. Returns the resulting group without changing {@code this}.
 	 * 
-	 * @param user user to revoke access from
+	 * @param user
+	 *            user to revoke access from
 	 * @return group resulting of the difference between '{@code this}' and the group of the given user
 	 */
 	public PersistentGroup revoke(User user) {
@@ -198,9 +204,11 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	/**
 	 * Parse group from the group language expression.
 	 * 
-	 * @param expression the group in textual form
+	 * @param expression
+	 *            the group in textual form
 	 * @return group representing the semantics of the expression.
-	 * @throws GroupException if a parsing error occurs
+	 * @throws GroupException
+	 *             if a parsing error occurs
 	 */
 	public static PersistentGroup parse(String expression) {
 		try {
@@ -214,7 +222,8 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	 * Selects the (known to be singleton) group of a given type. (Intended to use in implementations of {@code getInstance(...)}
 	 * methods).
 	 * 
-	 * @param type the wanted type
+	 * @param type
+	 *            the wanted type
 	 * @return group instance.
 	 */
 	protected static <T extends PersistentGroup> T select(final @Nonnull Class<? extends T> type) {
@@ -225,15 +234,17 @@ public abstract class PersistentGroup extends PersistentGroup_Base {
 	 * Selects the group of a given type that matches the predicate. (Intended to use in implementations of
 	 * {@code getInstance(...)} methods).
 	 * 
-	 * @param type the wanted type
-	 * @param predicate the predicate to apply to group instances
+	 * @param type
+	 *            the wanted type
+	 * @param predicate
+	 *            the predicate to apply to group instances
 	 * @return group instance.
 	 */
 	protected static <T extends PersistentGroup> T select(final @Nonnull Class<? extends T> type,
 			final @Nonnull Predicate<? super T> predicate) {
 		@SuppressWarnings("unchecked")
-		Predicate<? super PersistentGroup> realPredicate =
-				Predicates.and(Predicates.instanceOf(type), (Predicate<? super PersistentGroup>) predicate);
+		Predicate<? super PersistentGroup> realPredicate = Predicates.and(Predicates.instanceOf(type),
+				(Predicate<? super PersistentGroup>) predicate);
 		return (T) Iterables.tryFind(VirtualHost.getVirtualHostForThread().getGroupsSet(), realPredicate).orNull();
 	}
 }
