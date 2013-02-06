@@ -211,5 +211,4 @@ public class ConfigurationManager {
     public static Locale getDefaultLocale() {
         return new Locale(getProperty("language"), getProperty("location"), getProperty("variant"));
     }
- 
 }

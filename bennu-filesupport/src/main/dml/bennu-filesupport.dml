@@ -1,0 +1,128 @@
+/*
+ * bennu-filesupport.dml
+ *
+ * Copyright (c) 2013, Instituto Superior Técnico. All rights reserved.
+ *
+ * This file is part of bennu-filesupport.
+ *
+ * bennu-filesupport is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * bennu-filesupport is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with bennu-filesupport.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package pt.ist.bennu.filesupport.domain;
+
+class FileSupport;
+
+relation BennuFileSupport {
+	FileSupport playsRole fileSupport {
+		multiplicity 0..1;
+	}
+	.pt.ist.bennu.core.domain.Bennu playsRole bennu {
+		multiplicity 1..1;
+	}
+}
+
+class GenericFile {
+	DateTime creationDate (REQUIRED);
+	String filename (REQUIRED);
+	Long size (REQUIRED);
+	String contentKey (REQUIRED);
+	String displayName;
+	String contentType;
+}
+
+relation FileSupportFiles {
+	FileSupport playsRole fileSupport {
+		multiplicity 1..1;
+	}
+	GenericFile playsRole genericFiles {
+		multiplicity *;
+	}
+}
+
+class FileStorage {
+	String name;
+}
+
+relation FileSupportStorages {
+	FileSupport playsRole fileSupport {
+		multiplicity 1..1;
+	}
+	FileStorage playsRole fileStorages {
+		multiplicity *;
+	}
+}
+
+relation FileStorageFile {
+	FileStorage playsRole storage {
+		multiplicity 1..1;
+	}
+	GenericFile playsRole files {
+		multiplicity *;
+	}
+}
+
+class DomainStorage extends FileStorage;
+
+class FileRawData {
+	String contentKey;
+	bytearray content;
+}
+
+relation DomainStorageRawData {
+	DomainStorage playsRole storage {
+		multiplicity 1..1;
+	}
+	FileRawData playsRole fileRawDatas {
+		multiplicity *;
+	}
+}
+
+class LocalFileSystemStorage extends FileStorage {
+	String path;
+	Integer treeDirectoriesNameLength;
+}	
+
+class FileStorageConfiguration {
+	String fileType;
+}
+
+relation FileSupportConfigurations {
+	FileSupport playsRole fileSupport {
+		multiplicity 1..1;
+	}
+	FileStorageConfiguration playsRole fileStorageConfigurations {
+		multiplicity *;
+	}
+}
+
+relation FileStorageConfigurations {
+	FileStorage playsRole storage {
+		multiplicity 1..1;
+	}
+	FileStorageConfiguration playsRole configurations{
+		multiplicity *;
+	}
+}
+
+class LocalFileToDelete {
+	String filePath;
+}
+
+relation FileSupportFileDeleteQueue {
+	FileSupport playsRole fileSupport {
+		multiplicity 1..1;
+	}
+	LocalFileToDelete playsRole localFilesToDelete {
+		multiplicity *;
+	}
+}
