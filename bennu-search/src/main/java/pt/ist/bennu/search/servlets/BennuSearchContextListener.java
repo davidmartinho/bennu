@@ -9,15 +9,15 @@ import pt.ist.fenixframework.pstm.TopLevelTransaction;
 
 @WebListener
 public class BennuSearchContextListener implements ServletContextListener {
-	private IndexListener listener = new IndexListener();
+    private IndexListener listener = new IndexListener();
 
-	@Override
-	public void contextInitialized(ServletContextEvent event) {
-		TopLevelTransaction.addCommitListener(listener);
-	}
+    @Override
+    public void contextInitialized(ServletContextEvent event) {
+        TopLevelTransaction.addCommitListener(listener);
+    }
 
-	@Override
-	public void contextDestroyed(ServletContextEvent event) {
-		TopLevelTransaction.removeCommitListener(listener);
-	}
+    @Override
+    public void contextDestroyed(ServletContextEvent event) {
+        TopLevelTransaction.removeCommitListener(listener);
+    }
 }

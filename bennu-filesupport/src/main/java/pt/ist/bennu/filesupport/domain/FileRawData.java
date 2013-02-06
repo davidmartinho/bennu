@@ -6,19 +6,19 @@ package pt.ist.bennu.filesupport.domain;
  * 
  */
 public class FileRawData extends FileRawData_Base {
-	public FileRawData() {
-		super();
-	}
+    public FileRawData() {
+        super();
+    }
 
-	public FileRawData(DomainStorage storage, String uniqueIdentification, byte[] content) {
-		this();
-		setStorage(storage);
-		setContent(content);
-		setContentKey(uniqueIdentification);
-	}
+    public FileRawData(DomainStorage storage, String uniqueIdentification, byte[] content) {
+        this();
+        setStorage(storage);
+        setContent(content);
+        setContentKey(uniqueIdentification);
+    }
 
-	public void delete() {
-		removeStorage();
-		deleteDomainObject();
-	}
+    public void delete() {
+        removeStorage();
+        deleteDomainObject();
+    }
 }

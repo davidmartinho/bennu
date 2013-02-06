@@ -10,5 +10,5 @@ import pt.ist.fenixframework.DomainObject;
  * @author Paulo Abrantes
  */
 public interface Indexable extends DomainObject {
-	public IndexDocument getDocumentToIndex();
+    public IndexDocument getDocumentToIndex();
 }

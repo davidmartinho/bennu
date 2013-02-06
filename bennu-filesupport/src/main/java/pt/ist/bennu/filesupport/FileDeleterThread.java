@@ -13,35 +13,35 @@ import pt.ist.fenixframework.pstm.Transaction;
 
 public class FileDeleterThread implements Runnable {
 
-	private static final long SLEEP_TIME = 300000;
-	private static final Logger logger = LoggerFactory.getLogger(FileDeleterThread.class);
+    private static final long SLEEP_TIME = 300000;
+    private static final Logger logger = LoggerFactory.getLogger(FileDeleterThread.class);
 
-	@Override
-	public void run() {
-		try {
-			Thread.sleep(SLEEP_TIME);
-			logger.debug("Tick!");
-			process();
-		} catch (InterruptedException e) {
-			// The application is shutting down...
-			return;
-		}
-	}
+    @Override
+    public void run() {
+        try {
+            Thread.sleep(SLEEP_TIME);
+            logger.debug("Tick!");
+            process();
+        } catch (InterruptedException e) {
+            // The application is shutting down...
+            return;
+        }
+    }
 
-	private void process() {
-		Transaction.withTransaction(new TransactionalCommand() {
-			@Override
-			public void doIt() {
-				for (final LocalFileToDelete localFileToDelete : new ArrayList<>(FileSupport.getInstance()
-						.getLocalFilesToDelete())) {
-					logger.info("Deleting: " + localFileToDelete.getFilePath());
-					try {
-						localFileToDelete.delete();
-					} catch (Exception e) {
-						logger.debug("Failed to delete file", e);
-					}
-				}
-			}
-		});
-	}
+    private void process() {
+        Transaction.withTransaction(new TransactionalCommand() {
+            @Override
+            public void doIt() {
+                for (final LocalFileToDelete localFileToDelete : new ArrayList<>(FileSupport.getInstance()
+                        .getLocalFilesToDelete())) {
+                    logger.info("Deleting: " + localFileToDelete.getFilePath());
+                    try {
+                        localFileToDelete.delete();
+                    } catch (Exception e) {
+                        logger.debug("Failed to delete file", e);
+                    }
+                }
+            }
+        });
+    }
 }

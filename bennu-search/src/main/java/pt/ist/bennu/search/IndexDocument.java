@@ -19,67 +19,67 @@ import pt.ist.bennu.search.DomainIndexer.DefaultIndexFields;
  * @author Paulo Abrantes
  */
 public class IndexDocument {
-	private Map<IndexableField, String> values;
+    private Map<IndexableField, String> values;
 
-	private String indexId;
+    private String indexId;
 
-	private Class<? extends Indexable> indexableClass;
+    private Class<? extends Indexable> indexableClass;
 
-	public IndexDocument(Indexable indexable) {
-		this.indexId = indexable.getExternalId();
-		this.indexableClass = indexable.getClass();
-		this.values = new HashMap<>();
-	}
+    public IndexDocument(Indexable indexable) {
+        this.indexId = indexable.getExternalId();
+        this.indexableClass = indexable.getClass();
+        this.values = new HashMap<>();
+    }
 
-	public void indexField(IndexableField field, String value) {
-		values.put(field, value);
-	}
+    public void indexField(IndexableField field, String value) {
+        values.put(field, value);
+    }
 
-	public Set<IndexableField> getIndexableFields() {
-		return values.keySet();
-	}
+    public Set<IndexableField> getIndexableFields() {
+        return values.keySet();
+    }
 
-	public String getValueForField(IndexableField field) {
-		return values.get(field);
-	}
+    public String getValueForField(IndexableField field) {
+        return values.get(field);
+    }
 
-	public String getIndexId() {
-		return this.indexId;
-	}
+    public String getIndexId() {
+        return this.indexId;
+    }
 
-	public Class<? extends Indexable> getIndexableClass() {
-		return this.indexableClass;
-	}
+    public Class<? extends Indexable> getIndexableClass() {
+        return this.indexableClass;
+    }
 
-	public Document getLuceneDocument() {
-		Document doc = new Document();
-		StringBuilder builder = new StringBuilder();
+    public Document getLuceneDocument() {
+        Document doc = new Document();
+        StringBuilder builder = new StringBuilder();
 
-		doc.add(new Field(DefaultIndexFields.IDENTIFIER_FIELD.getFieldName(), getIndexId(), Field.Store.YES,
-				Field.Index.NOT_ANALYZED));
+        doc.add(new Field(DefaultIndexFields.IDENTIFIER_FIELD.getFieldName(), getIndexId(), Field.Store.YES,
+                Field.Index.NOT_ANALYZED));
 
-		for (IndexableField indexableField : getIndexableFields()) {
-			String value = getValueForField(indexableField);
-			doc.add(new Field(indexableField.getFieldName(), value, Field.Store.NO, Field.Index.ANALYZED));
-			builder.append(value);
-			builder.append(" ");
-		}
-		doc.add(new Field(DefaultIndexFields.DEFAULT_FIELD.getFieldName(), builder.toString(), Field.Store.NO,
-				Field.Index.ANALYZED));
-		return doc;
-	}
+        for (IndexableField indexableField : getIndexableFields()) {
+            String value = getValueForField(indexableField);
+            doc.add(new Field(indexableField.getFieldName(), value, Field.Store.NO, Field.Index.ANALYZED));
+            builder.append(value);
+            builder.append(" ");
+        }
+        doc.add(new Field(DefaultIndexFields.DEFAULT_FIELD.getFieldName(), builder.toString(), Field.Store.NO,
+                Field.Index.ANALYZED));
+        return doc;
+    }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj instanceof IndexDocument) {
-			IndexDocument otherDocument = (IndexDocument) obj;
-			return indexId.equals(otherDocument.getIndexId());
-		}
-		return false;
-	}
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IndexDocument) {
+            IndexDocument otherDocument = (IndexDocument) obj;
+            return indexId.equals(otherDocument.getIndexId());
+        }
+        return false;
+    }
 
-	@Override
-	public int hashCode() {
-		return this.indexId.hashCode();
-	}
+    @Override
+    public int hashCode() {
+        return this.indexId.hashCode();
+    }
 }

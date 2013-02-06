@@ -3,14 +3,14 @@ package pt.ist.bennu.filesupport.domain;
 import pt.ist.bennu.core.domain.Bennu;
 
 public class FileSupport extends FileSupport_Base {
-	private FileSupport() {
-		super();
-	}
+    private FileSupport() {
+        super();
+    }
 
-	public static FileSupport getInstance() {
-		if (!Bennu.getInstance().hasFileSupport()) {
-			Bennu.getInstance().setFileSupport(new FileSupport());
-		}
-		return Bennu.getInstance().getFileSupport();
-	}
+    public static FileSupport getInstance() {
+        if (!Bennu.getInstance().hasFileSupport()) {
+            Bennu.getInstance().setFileSupport(new FileSupport());
+        }
+        return Bennu.getInstance().getFileSupport();
+    }
 }
