@@ -45,9 +45,4 @@ public class DomainStorage extends DomainStorage_Base {
     public InputStream readAsInputStream(String uniqueIdentification) {
         return new ByteArrayInputStream(read(uniqueIdentification));
     }
-
-    // @Override
-    // public Collection<Pair<String, String>> getPresentationDetails() {
-    // return Collections.EMPTY_LIST;
-    // }
 }

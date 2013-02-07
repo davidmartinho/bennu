@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 
 import jvstm.PerTxBox;
 
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import com.google.common.base.CharMatcher;
+import com.google.common.io.Files;
 
 /**
  * 
@@ -37,7 +37,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
         }
 
         public void write() throws IOException {
-            FileUtils.writeByteArrayToFile(new File(path), contents);
+            Files.write(contents, new File(path));
         }
     }
 
@@ -74,7 +74,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 
             Map<String, FileWriteIntention> map = getPerTxBox().get();
             if (map == null) {
-                map = new HashMap<String, FileWriteIntention>();
+                map = new HashMap<>();
                 fileIntentions.put(map);
             }
             if (map.containsKey(uniqueIdentification)) {
@@ -98,9 +98,8 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 
             // Replace all occurrences of pattern in input
             StringBuffer result = new StringBuffer();
-            boolean found = false;
-            while ((found = matcher.find())) {
-                String replaceStr = StringUtils.strip(matcher.group(), "{}");
+            while (matcher.find()) {
+                String replaceStr = CharMatcher.anyOf("{}").trimFrom(matcher.group());
                 matcher.appendReplacement(result, System.getProperty(replaceStr));
             }
             matcher.appendTail(result);
@@ -136,7 +135,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
                 return map.get(uniqueIdentification).contents;
             }
 
-            return FileUtils.readFileToByteArray(new File(getFullPath(uniqueIdentification) + uniqueIdentification));
+            return Files.toByteArray(new File(getFullPath(uniqueIdentification) + uniqueIdentification));
         } catch (IOException e) {
             throw new RuntimeException("error.store.file", e);
         }
@@ -174,20 +173,4 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
         }
         return fileIntentions;
     }
-
-    // @Override
-    // public Collection<Pair<String, String>> getPresentationDetails() {
-    // List<Pair<String, String>> result = new ArrayList<Pair<String,
-    // String>>();
-    // result.add(new Pair<String,
-    // String>(BundleUtil.getStringFromResourceBundle("resources.FileSupportResources",
-    // "label.localFileSystemStorage.path"), getPath()));
-    // result.add(new Pair<String,
-    // String>(BundleUtil.getStringFromResourceBundle("resources.FileSupportResources",
-    // "label.localFileSystemStorage.treeDirectoriesNameLength"),
-    // getTreeDirectoriesNameLength() != null ?
-    // getTreeDirectoriesNameLength().toString() : ""));
-    // return result;
-    // }
-
 }
