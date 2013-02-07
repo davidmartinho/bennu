@@ -23,23 +23,23 @@ public class LuceneSearchPlugin implements FenixFrameworkPlugin, ServletContextL
 
     @Override
     public List<URL> getDomainModel() {
-	URL resource = getClass().getResource("/luceneSearch-plugin.dml");
-	return Collections.singletonList(resource);
+        URL resource = getClass().getResource("/luceneSearch-plugin.dml");
+        return Collections.singletonList(resource);
     }
 
     @Override
     @Service
     public void initialize() {
-	if (!initialized) {
-	    LuceneSearchPluginRoot.getInstance();
-	    TopLevelTransaction.addCommitListener(new IndexListener());
-	    initialized = true;
-	}
+        if (!initialized) {
+            LuceneSearchPluginRoot.getInstance();
+            TopLevelTransaction.addCommitListener(new IndexListener());
+            initialized = true;
+        }
     }
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-	initialize();
+        initialize();
     }
 
     @Override

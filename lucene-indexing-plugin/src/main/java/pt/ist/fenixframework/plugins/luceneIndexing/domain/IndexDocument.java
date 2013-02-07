@@ -23,43 +23,43 @@ public class IndexDocument {
     private Class<? extends DomainObject> domainObjectClass;
 
     public IndexDocument(DomainObject domainObject) {
-	this.indexId = domainObject.getExternalId();
-	this.domainObjectClass = domainObject.getClass();
-	this.values = new HashMap<IndexableField, String>();
+        this.indexId = domainObject.getExternalId();
+        this.domainObjectClass = domainObject.getClass();
+        this.values = new HashMap<IndexableField, String>();
     }
 
     public void indexField(IndexableField field, String value) {
-	values.put(field, value);
+        values.put(field, value);
     }
 
     public Set<IndexableField> getIndexableFields() {
-	return values.keySet();
+        return values.keySet();
     }
 
     public String getValueForField(IndexableField field) {
-	return values.get(field);
+        return values.get(field);
     }
 
     public String getIndexId() {
-	return this.indexId;
+        return this.indexId;
     }
 
     public Class<? extends DomainObject> getDomainObjectClass() {
-	return this.domainObjectClass;
+        return this.domainObjectClass;
     }
 
     @Override
     public boolean equals(Object obj) {
-	if (obj instanceof IndexDocument) {
-	    IndexDocument otherDocument = (IndexDocument) obj;
-	    return indexId.equals(otherDocument.getIndexId());
-	}
+        if (obj instanceof IndexDocument) {
+            IndexDocument otherDocument = (IndexDocument) obj;
+            return indexId.equals(otherDocument.getIndexId());
+        }
 
-	return false;
+        return false;
     }
 
     @Override
     public int hashCode() {
-	return this.indexId.hashCode();
+        return this.indexId.hashCode();
     }
 }

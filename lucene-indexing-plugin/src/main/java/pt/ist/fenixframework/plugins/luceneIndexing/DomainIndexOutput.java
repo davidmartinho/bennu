@@ -19,95 +19,95 @@ public class DomainIndexOutput extends IndexOutput {
     private final LuceneDomainDirectory directory;
 
     public DomainIndexOutput(RAMIndex file, LuceneDomainDirectory directory) {
-	this.file = file;
+        this.file = file;
 
-	this.currentBufferIndex = -1;
-	this.currentBuffer = null;
-	this.directory = directory;
+        this.currentBufferIndex = -1;
+        this.currentBuffer = null;
+        this.directory = directory;
     }
 
     @Override
     public void close() throws IOException {
-	if (this.directory != null) {
-	    this.directory.removeFileFromMap(this.file);
-	}
-	flush();
+        if (this.directory != null) {
+            this.directory.removeFileFromMap(this.file);
+        }
+        flush();
     }
 
     @Override
     public void flush() throws IOException {
-	this.file.setLastModified(System.currentTimeMillis());
-	setFileLength();
-	this.file.persist();
+        this.file.setLastModified(System.currentTimeMillis());
+        setFileLength();
+        this.file.persist();
     }
 
     private void setFileLength() {
-	long pointer = bufferStart + bufferPosition;
-	if (pointer > this.file.getLength()) {
-	    file.setLength(pointer);
-	}
+        long pointer = bufferStart + bufferPosition;
+        if (pointer > this.file.getLength()) {
+            file.setLength(pointer);
+        }
     }
 
     @Override
     public long getFilePointer() {
-	return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
+        return currentBufferIndex < 0 ? 0 : bufferStart + bufferPosition;
     }
 
     @Override
     public long length() throws IOException {
-	return this.file.getLength();
+        return this.file.getLength();
     }
 
     @Override
     public void seek(long pos) throws IOException {
-	setFileLength();
-	if (pos < bufferStart || pos >= bufferStart + bufferLength) {
-	    currentBufferIndex = (int) (pos / BUFFER_SIZE);
-	    switchCurrentBuffer();
-	}
+        setFileLength();
+        if (pos < bufferStart || pos >= bufferStart + bufferLength) {
+            currentBufferIndex = (int) (pos / BUFFER_SIZE);
+            switchCurrentBuffer();
+        }
 
-	bufferPosition = (int) (pos % BUFFER_SIZE);
+        bufferPosition = (int) (pos % BUFFER_SIZE);
     }
 
     private final void switchCurrentBuffer() {
-	if (currentBufferIndex == this.file.numBuffers()) {
-	    currentBuffer = this.file.addBuffer(BUFFER_SIZE).getBytes();
-	} else {
-	    currentBuffer = this.file.getBuffer(currentBufferIndex).getBytes();
-	}
-	bufferPosition = 0;
-	bufferStart = (long) BUFFER_SIZE * (long) currentBufferIndex;
-	bufferLength = currentBuffer.length;
+        if (currentBufferIndex == this.file.numBuffers()) {
+            currentBuffer = this.file.addBuffer(BUFFER_SIZE).getBytes();
+        } else {
+            currentBuffer = this.file.getBuffer(currentBufferIndex).getBytes();
+        }
+        bufferPosition = 0;
+        bufferStart = (long) BUFFER_SIZE * (long) currentBufferIndex;
+        bufferLength = currentBuffer.length;
     }
 
     @Override
     public void writeByte(byte b) throws IOException {
-	if (bufferPosition == bufferLength) {
-	    currentBufferIndex++;
-	    switchCurrentBuffer();
-	}
-	currentBuffer[bufferPosition++] = b;
+        if (bufferPosition == bufferLength) {
+            currentBufferIndex++;
+            switchCurrentBuffer();
+        }
+        currentBuffer[bufferPosition++] = b;
     }
 
     @Override
     public void writeBytes(byte[] b, int offset, int len) throws IOException {
-	assert b != null;
-	while (len > 0) {
-	    if (bufferPosition == bufferLength) {
-		currentBufferIndex++;
-		switchCurrentBuffer();
-	    }
+        assert b != null;
+        while (len > 0) {
+            if (bufferPosition == bufferLength) {
+                currentBufferIndex++;
+                switchCurrentBuffer();
+            }
 
-	    int remainInBuffer = currentBuffer.length - bufferPosition;
-	    int bytesToCopy = len < remainInBuffer ? len : remainInBuffer;
+            int remainInBuffer = currentBuffer.length - bufferPosition;
+            int bytesToCopy = len < remainInBuffer ? len : remainInBuffer;
 
-	    byte[] byteArrayToBeDestination = this.currentBuffer;
-	    System.arraycopy(b, offset, byteArrayToBeDestination, bufferPosition, bytesToCopy);
+            byte[] byteArrayToBeDestination = this.currentBuffer;
+            System.arraycopy(b, offset, byteArrayToBeDestination, bufferPosition, bytesToCopy);
 
-	    offset += bytesToCopy;
-	    len -= bytesToCopy;
-	    bufferPosition += bytesToCopy;
-	}
+            offset += bytesToCopy;
+            len -= bytesToCopy;
+            bufferPosition += bytesToCopy;
+        }
     }
 
 }

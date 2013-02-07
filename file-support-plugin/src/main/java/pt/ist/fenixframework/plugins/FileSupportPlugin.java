@@ -19,24 +19,24 @@ public class FileSupportPlugin implements FenixFrameworkPlugin, ServletContextLi
 
     @Override
     public List<URL> getDomainModel() {
-	URL resource = getClass().getResource("/file-plugin.dml");
-	return Collections.singletonList(resource);
+        URL resource = getClass().getResource("/file-plugin.dml");
+        return Collections.singletonList(resource);
     }
 
     @Override
     @Service
     public void initialize() {
-	if (!initialized) {
-	    FileSupport.getInstance();
-	    Thread thread = new Thread(new FileDeleterThread());
-	    thread.start();
-	    initialized = true;
-	}
+        if (!initialized) {
+            FileSupport.getInstance();
+            Thread thread = new Thread(new FileDeleterThread());
+            thread.start();
+            initialized = true;
+        }
     }
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
-	initialize();
+        initialize();
     }
 
     @Override

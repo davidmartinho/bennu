@@ -10,21 +10,21 @@ import java.io.File;
 public class LocalFileToDelete extends LocalFileToDelete_Base {
 
     public LocalFileToDelete() {
-	super();
-	setFileSupport(FileSupport.getInstance());
+        super();
+        setFileSupport(FileSupport.getInstance());
     }
 
     public LocalFileToDelete(String path) {
-	this();
-	setFilePath(path);
+        this();
+        setFilePath(path);
     }
 
     public void delete() {
-	final File existingFile = new File(getFilePath());
-	if (!existingFile.exists() || existingFile.delete()) {
-	    removeFileSupport();
-	    deleteDomainObject();
-	}
+        final File existingFile = new File(getFilePath());
+        if (!existingFile.exists() || existingFile.delete()) {
+            removeFileSupport();
+            deleteDomainObject();
+        }
     }
 
 }

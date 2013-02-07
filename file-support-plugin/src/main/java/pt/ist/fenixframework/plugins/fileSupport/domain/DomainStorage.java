@@ -14,36 +14,36 @@ import pt.ist.fenixframework.pstm.AbstractDomainObject;
 public class DomainStorage extends DomainStorage_Base {
 
     public DomainStorage() {
-	super();
+        super();
     }
 
     public DomainStorage(String name) {
-	this();
-	setName(name);
+        this();
+        setName(name);
     }
 
     @Override
     public String store(String uniqueIdentification, byte[] content) {
-	final DomainObject existingRawData = AbstractDomainObject.fromExternalId(uniqueIdentification);
-	if (existingRawData instanceof FileRawData && existingRawData != null) {
-	    ((FileRawData) existingRawData).delete();
-	}
+        final DomainObject existingRawData = AbstractDomainObject.fromExternalId(uniqueIdentification);
+        if (existingRawData instanceof FileRawData && existingRawData != null) {
+            ((FileRawData) existingRawData).delete();
+        }
 
-	if (content != null) {
-	    return new FileRawData(uniqueIdentification, content).getExternalId();
-	}
-	return null;
+        if (content != null) {
+            return new FileRawData(uniqueIdentification, content).getExternalId();
+        }
+        return null;
     }
 
     @Override
     public byte[] read(String uniqueIdentification) {
-	final FileRawData rawData = FileRawData.fromExternalId(uniqueIdentification);
-	return rawData != null ? rawData.getContent().getBytes() : null;
+        final FileRawData rawData = FileRawData.fromExternalId(uniqueIdentification);
+        return rawData != null ? rawData.getContent().getBytes() : null;
     }
 
     @Override
     public InputStream readAsInputStream(String uniqueIdentification) {
-	return new ByteArrayInputStream(read(uniqueIdentification));
+        return new ByteArrayInputStream(read(uniqueIdentification));
     }
 
     // @Override

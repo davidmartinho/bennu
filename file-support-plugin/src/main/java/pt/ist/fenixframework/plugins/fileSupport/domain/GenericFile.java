@@ -28,59 +28,59 @@ import pt.ist.fenixframework.pstm.Transaction;
 abstract public class GenericFile extends GenericFile_Base {
 
     public GenericFile() {
-	super();
-	setFileSupport(FileSupport.getInstance());
-	setCreationDate(new DateTime());
+        super();
+        setFileSupport(FileSupport.getInstance());
+        setCreationDate(new DateTime());
     }
 
     protected void init(String displayName, String filename, byte[] content) {
-	if (content == null) {
-	    throw new NullPointerException("Content byte[] is null");
-	}
-	setDisplayName(displayName);
-	setFilename(filename);
-	setContent(content);
+        if (content == null) {
+            throw new NullPointerException("Content byte[] is null");
+        }
+        setDisplayName(displayName);
+        setFilename(filename);
+        setContent(content);
     }
 
     @Override
     public void setFilename(String filename) {
-	final String nicerFilename = FilenameUtils.getName(filename);
-	final String normalizedFilename = Normalizer.normalize(nicerFilename, Form.NFD).replaceAll("[^\\p{ASCII}]", "");
-	super.setFilename(normalizedFilename);
-	super.setContentType(guessContentType(normalizedFilename));
+        final String nicerFilename = FilenameUtils.getName(filename);
+        final String normalizedFilename = Normalizer.normalize(nicerFilename, Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+        super.setFilename(normalizedFilename);
+        super.setContentType(guessContentType(normalizedFilename));
     }
 
     public void setContent(byte[] content) {
-	long size = (content == null) ? 0 : content.length;
-	setSize(Long.valueOf(size));
-	final FileStorage fileStorage = getFileStorage();
-	final String uniqueIdentification = fileStorage.store(StringUtils.isEmpty(getContentKey()) ? getExternalId()
-		: getContentKey(), content);
-	setStorage(fileStorage);
+        long size = (content == null) ? 0 : content.length;
+        setSize(Long.valueOf(size));
+        final FileStorage fileStorage = getFileStorage();
+        final String uniqueIdentification =
+                fileStorage.store(StringUtils.isEmpty(getContentKey()) ? getExternalId() : getContentKey(), content);
+        setStorage(fileStorage);
 
-	if (StringUtils.isEmpty(uniqueIdentification) && content != null) {
-	    throw new RuntimeException();
-	}
+        if (StringUtils.isEmpty(uniqueIdentification) && content != null) {
+            throw new RuntimeException();
+        }
 
-	setContentKey(uniqueIdentification);
+        setContentKey(uniqueIdentification);
     }
 
     public byte[] getContent() {
-	return getStorage().read(getContentKey());
+        return getStorage().read(getContentKey());
     }
 
     public InputStream getStream() {
-	return getStorage().readAsInputStream(getContentKey());
+        return getStorage().readAsInputStream(getContentKey());
     }
 
     private void updateFileStorage() {
-	Transaction.withTransaction(new TransactionalCommand() {
+        Transaction.withTransaction(new TransactionalCommand() {
 
-	    @Override
-	    public void doIt() {
-		setContent(getContent());
-	    }
-	});
+            @Override
+            public void doIt() {
+                setContent(getContent());
+            }
+        });
     }
 
     /**
@@ -94,13 +94,13 @@ abstract public class GenericFile extends GenericFile_Base {
      *            information
      */
     public byte[] getMessageDigest(String algorithm) {
-	MessageDigest messageDigest;
-	try {
-	    messageDigest = MessageDigest.getInstance(algorithm);
-	} catch (NoSuchAlgorithmException e) {
-	    throw new FFDomainException(e);
-	}
-	return messageDigest.digest(getContent());
+        MessageDigest messageDigest;
+        try {
+            messageDigest = MessageDigest.getInstance(algorithm);
+        } catch (NoSuchAlgorithmException e) {
+            throw new FFDomainException(e);
+        }
+        return messageDigest.digest(getContent());
     }
 
     /**
@@ -109,11 +109,11 @@ abstract public class GenericFile extends GenericFile_Base {
      * @return the SHA-256 digest of the file content
      */
     public byte[] getSHA256MessageDigest() {
-	return getMessageDigest("SHA-256");
+        return getMessageDigest("SHA-256");
     }
 
     public byte[] getSHA1MessageDigest() {
-	return getMessageDigest("SHA-1");
+        return getMessageDigest("SHA-1");
     }
 
     /**
@@ -123,7 +123,7 @@ abstract public class GenericFile extends GenericFile_Base {
      * @return hexadecimal representation of the SHA256 digest
      */
     public String getHexSHA256MessageDigest() {
-	return Hex.encodeHexString(getSHA256MessageDigest());
+        return Hex.encodeHexString(getSHA256MessageDigest());
 
     }
 
@@ -134,65 +134,65 @@ abstract public class GenericFile extends GenericFile_Base {
      * @return hexadecimal representation of the SHA1 digest
      */
     public String getHexSHA1MessageDigest() {
-	return Hex.encodeHexString(getSHA1MessageDigest());
+        return Hex.encodeHexString(getSHA1MessageDigest());
 
     }
 
     public static void convertFileStorages(final FileStorage fileStorageToUpdate) {
 
-	if (fileStorageToUpdate != null) {
-	    try {
-		for (final GenericFile genericFile : FileSupport.getInstance().getGenericFiles()) {
-		    if (fileStorageToUpdate == genericFile.getFileStorage() && fileStorageToUpdate != genericFile.getStorage()) {
-			genericFile.updateFileStorage();
-		    }
-		}
-		System.out.println("FILE Conversion: DONE SUCESSFULLY!");
-	    } catch (Throwable e) {
-		System.out.println("FILE Conversion: ABORTED!!!");
-		e.printStackTrace();
-	    }
-	}
+        if (fileStorageToUpdate != null) {
+            try {
+                for (final GenericFile genericFile : FileSupport.getInstance().getGenericFiles()) {
+                    if (fileStorageToUpdate == genericFile.getFileStorage() && fileStorageToUpdate != genericFile.getStorage()) {
+                        genericFile.updateFileStorage();
+                    }
+                }
+                System.out.println("FILE Conversion: DONE SUCESSFULLY!");
+            } catch (Throwable e) {
+                System.out.println("FILE Conversion: ABORTED!!!");
+                e.printStackTrace();
+            }
+        }
     }
 
     private FileStorage getFileStorage() {
-	final FileStorage fileStorage = FileStorageConfiguration.readFileStorageByFileType(getClass().getName());
-	if (fileStorage == null) {
-	    throw new RuntimeException("error.fileStorage.notDefinedForClassType");
-	}
-	return fileStorage;
+        final FileStorage fileStorage = FileStorageConfiguration.readFileStorageByFileType(getClass().getName());
+        if (fileStorage == null) {
+            throw new RuntimeException("error.fileStorage.notDefinedForClassType");
+        }
+        return fileStorage;
     }
 
     protected String guessContentType(final String filename) {
-	return new MimetypesFileTypeMap().getContentType(filename);
+        return new MimetypesFileTypeMap().getContentType(filename);
     }
 
     public void deleteService() {
-	Transaction.withTransaction(new TransactionalCommand() {
+        Transaction.withTransaction(new TransactionalCommand() {
 
-	    @Override
-	    public void doIt() {
-		delete();
-	    }
+            @Override
+            public void doIt() {
+                delete();
+            }
 
-	});
+        });
 
     }
 
     public void delete() {
-	setContent(null);
-	removeStorage();
-	removeFileSupport();
-	deleteDomainObject();
+        setContent(null);
+        removeStorage();
+        removeFileSupport();
+        deleteDomainObject();
     }
 
     public static <T extends GenericFile> List<T> getFiles(final Class<T> clazz) {
-	final List<T> files = new ArrayList<T>();
-	for (final GenericFile file : FileSupport.getInstance().getGenericFiles()) {
-	    if (file.getClass().equals(clazz)) {
-		files.add((T) file);
-	    }
-	}
-	return files;
+        final List<T> files = new ArrayList<T>();
+        for (final GenericFile file : FileSupport.getInstance().getGenericFiles()) {
+            if (file.getClass().equals(clazz)) {
+                files.add((T) file);
+            }
+        }
+        return files;
     }
 }

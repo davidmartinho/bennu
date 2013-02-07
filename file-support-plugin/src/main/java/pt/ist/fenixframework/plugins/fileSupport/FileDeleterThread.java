@@ -17,33 +17,33 @@ public class FileDeleterThread implements Runnable {
 
     @Override
     public void run() {
-	try {
-	    Thread.sleep(SLEEP_TIME);
-	    logger.debug("Tick!");
-	    process();
-	} catch (InterruptedException e) {
-	    // The application is shutting down...
-	    return;
-	}
+        try {
+            Thread.sleep(SLEEP_TIME);
+            logger.debug("Tick!");
+            process();
+        } catch (InterruptedException e) {
+            // The application is shutting down...
+            return;
+        }
     }
 
     private void process() {
-	Transaction.withTransaction(new TransactionalCommand() {
+        Transaction.withTransaction(new TransactionalCommand() {
 
-	    @Override
-	    public void doIt() {
-		for (final LocalFileToDelete localFileToDelete : new ArrayList<LocalFileToDelete>(FileSupport.getInstance()
-			.getLocalFilesToDelete())) {
-		    logger.info("Deleting: " + localFileToDelete.getFilePath());
-		    try {
-			localFileToDelete.delete();
-		    } catch (Exception e) {
-			logger.debug("Failed to delete file", e);
-		    }
-		}
+            @Override
+            public void doIt() {
+                for (final LocalFileToDelete localFileToDelete : new ArrayList<LocalFileToDelete>(FileSupport.getInstance()
+                        .getLocalFilesToDelete())) {
+                    logger.info("Deleting: " + localFileToDelete.getFilePath());
+                    try {
+                        localFileToDelete.delete();
+                    } catch (Exception e) {
+                        logger.debug("Failed to delete file", e);
+                    }
+                }
 
-	    }
+            }
 
-	});
+        });
     }
 }

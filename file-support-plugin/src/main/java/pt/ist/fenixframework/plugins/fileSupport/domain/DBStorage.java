@@ -10,36 +10,36 @@ import java.io.InputStream;
 public class DBStorage extends DBStorage_Base {
 
     public DBStorage() {
-	super();
+        super();
     }
 
     public DBStorage(String name, String host, Integer port, String dbName, String tableName, String username, String password) {
-	this();
-	setName(name);
-	setHost(host);
-	setPort(port);
-	setDbName(dbName);
-	setTableName(tableName);
-	setUsername(username);
-	setPassword(password);
+        this();
+        setName(name);
+        setHost(host);
+        setPort(port);
+        setDbName(dbName);
+        setTableName(tableName);
+        setUsername(username);
+        setPassword(password);
     }
 
     @Override
     public String store(String uniqueIdentification, byte[] content) {
-	// TODO Auto-generated method stub
-	return null;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public byte[] read(String uniqueIdentification) {
-	// TODO Auto-generated method stub
-	return null;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     @Override
     public InputStream readAsInputStream(String uniqueIdentification) {
-	// TODO Auto-generated method stub
-	return null;
+        // TODO Auto-generated method stub
+        return null;
     }
 
     // @Override

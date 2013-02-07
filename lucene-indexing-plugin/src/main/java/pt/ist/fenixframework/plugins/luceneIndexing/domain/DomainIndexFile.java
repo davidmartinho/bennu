@@ -10,53 +10,53 @@ import pt.utl.ist.fenix.tools.util.ByteArray;
 public class DomainIndexFile extends DomainIndexFile_Base implements IndexFile {
 
     public DomainIndexFile() {
-	super();
-	setPluginRoot(LuceneSearchPluginRoot.getInstance());
-	setLength(0L);
+        super();
+        setPluginRoot(LuceneSearchPluginRoot.getInstance());
+        setLength(0L);
     }
 
     public void delete() {
-	removeDirectory();
-	removePluginRoot();
-	DomainIndexContent storedFile = getStoredFile();
-	if (storedFile != null) {
-	    storedFile.delete();
-	}
-	setStoredFile(null);
-	deleteDomainObject();
+        removeDirectory();
+        removePluginRoot();
+        DomainIndexContent storedFile = getStoredFile();
+        if (storedFile != null) {
+            storedFile.delete();
+        }
+        setStoredFile(null);
+        deleteDomainObject();
     }
 
     @Override
     public RAMIndex getNonPersistentIndex() {
-	return new RAMIndex(this);
+        return new RAMIndex(this);
     }
 
     @Override
     public DomainIndexFile getPersistentIndex() {
-	return this;
+        return this;
     }
 
     @Override
     public boolean isPersisted() {
-	return true;
+        return true;
     }
 
     public List<ByteArray> split(int bufferSize) {
-	long length = getLength();
-	byte[] indexContent = getIndexContent();
-	ArrayList<ByteArray> buffers = new ArrayList<ByteArray>();
+        long length = getLength();
+        byte[] indexContent = getIndexContent();
+        ArrayList<ByteArray> buffers = new ArrayList<ByteArray>();
 
-	byte[] content = indexContent != null ? indexContent : new byte[Math.min((int) length, bufferSize)];
-	int runner = 0;
+        byte[] content = indexContent != null ? indexContent : new byte[Math.min((int) length, bufferSize)];
+        int runner = 0;
 
-	while (runner < length) {
-	    byte[] buffer = new byte[bufferSize];
-	    System.arraycopy(content, runner, buffer, 0, Math.min(content.length, bufferSize));
-	    buffers.add(new ByteArray(buffer));
-	    runner += bufferSize;
-	}
+        while (runner < length) {
+            byte[] buffer = new byte[bufferSize];
+            System.arraycopy(content, runner, buffer, 0, Math.min(content.length, bufferSize));
+            buffers.add(new ByteArray(buffer));
+            runner += bufferSize;
+        }
 
-	return buffers;
+        return buffers;
     }
 
     /*
@@ -64,23 +64,23 @@ public class DomainIndexFile extends DomainIndexFile_Base implements IndexFile {
      * we're casting from long to int.
      */
     public byte readByte(long pos) {
-	return getIndexContent()[(int) pos];
+        return getIndexContent()[(int) pos];
     }
 
     public void readBytes(long pos, byte[] b, int offset, int len) {
-	System.arraycopy(getIndexContent(), (int) pos, b, offset, len);
+        System.arraycopy(getIndexContent(), (int) pos, b, offset, len);
     }
 
     public byte[] getIndexContent() {
-	DomainIndexContent storedFile = getStoredFile();
-	return storedFile != null ? storedFile.getContent() : null;
+        DomainIndexContent storedFile = getStoredFile();
+        return storedFile != null ? storedFile.getContent() : null;
     }
 
     public void setIndexContent(byte[] byteArray) {
-	DomainIndexContent storedFile = getStoredFile();
-	if (storedFile != null) {
-	    storedFile.delete();
-	}
-	setStoredFile(new DomainIndexContent(getName(), byteArray));
+        DomainIndexContent storedFile = getStoredFile();
+        if (storedFile != null) {
+            storedFile.delete();
+        }
+        setStoredFile(new DomainIndexContent(getName(), byteArray));
     }
 }
