@@ -1,4 +1,4 @@
-package pt.ist.fenixframework.plugins.fileSupport.domain;
+package pt.ist.bennu.filesupport.domain;
 
 import java.io.InputStream;
 import java.security.MessageDigest;

@@ -1,4 +1,4 @@
-package pt.ist.fenixframework.plugins;
+package pt.ist.bennu.filesupport.servlets;
 
 import java.net.URL;
 import java.util.Collections;
@@ -8,10 +8,10 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 
+import pt.ist.bennu.filesupport.FileDeleterThread;
+import pt.ist.bennu.filesupport.domain.FileSupport;
 import pt.ist.fenixWebFramework.services.Service;
 import pt.ist.fenixframework.FenixFrameworkPlugin;
-import pt.ist.fenixframework.plugins.fileSupport.FileDeleterThread;
-import pt.ist.fenixframework.plugins.fileSupport.domain.FileSupport;
 
 @WebListener
 public class FileSupportPlugin implements FenixFrameworkPlugin, ServletContextListener {
