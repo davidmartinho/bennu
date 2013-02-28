@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
@@ -247,9 +246,5 @@ public class ConfigurationManager {
 
     public static Config getFenixFrameworkConfig() {
         return config;
-    }
-
-    public static Locale getDefaultLocale() {
-        return new Locale(getProperty("language"), getProperty("location"), getProperty("variant"));
     }
 }
