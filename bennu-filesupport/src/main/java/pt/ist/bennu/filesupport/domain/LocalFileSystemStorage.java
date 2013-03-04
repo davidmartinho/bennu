@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import jvstm.PerTxBox;
+import pt.ist.bennu.filesupport.FileSupportException;
 
 import com.google.common.base.CharMatcher;
 import com.google.common.io.Files;
@@ -137,7 +138,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
 
             return Files.toByteArray(new File(getFullPath(uniqueIdentification) + uniqueIdentification));
         } catch (IOException e) {
-            throw new RuntimeException("error.store.file", e);
+            throw FileSupportException.fileAccessError(e);
         }
     }
 
@@ -165,7 +166,7 @@ public class LocalFileSystemStorage extends LocalFileSystemStorage_Base {
                         try {
                             map.get(key).write();
                         } catch (IOException e) {
-                            throw new RuntimeException("error.store.file", e);
+                            throw FileSupportException.fileAccessError(e);
                         }
                     }
                 }

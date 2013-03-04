@@ -15,10 +15,12 @@ import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import pt.ist.bennu.filesupport.contentExtraction.FileContentExtraction;
 import pt.ist.bennu.service.Service;
 import pt.ist.fenixframework.FFDomainException;
 
 import com.google.common.base.Strings;
+import com.google.gson.JsonObject;
 
 /**
  * 
@@ -127,6 +129,14 @@ abstract public class GenericFile extends GenericFile_Base {
         return Hex.encodeHexString(getSHA1MessageDigest());
     }
 
+    public JsonObject getMetadata() {
+        return FileContentExtraction.getMetadata(this);
+    }
+
+    public String getTextContent() {
+        return FileContentExtraction.getTextContent(this);
+    }
+
     public static void convertFileStorages(final FileStorage fileStorageToUpdate) {
         if (fileStorageToUpdate != null) {
             try {
@@ -149,11 +159,7 @@ abstract public class GenericFile extends GenericFile_Base {
     }
 
     private FileStorage getFileStorage() {
-        final FileStorage fileStorage = FileStorageConfiguration.readFileStorageByFileType(getClass().getName());
-        if (fileStorage == null) {
-            throw new RuntimeException("error.fileStorage.notDefinedForClassType");
-        }
-        return fileStorage;
+        return FileStorageConfiguration.readFileStorageByFileType(getClass().getName());
     }
 
     protected String guessContentType(final String filename) {

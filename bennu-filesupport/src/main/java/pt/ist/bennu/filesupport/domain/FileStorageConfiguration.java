@@ -2,6 +2,7 @@ package pt.ist.bennu.filesupport.domain;
 
 import java.util.HashSet;
 
+import pt.ist.bennu.filesupport.FileSupportException;
 import pt.ist.fenixframework.DomainModelUtil;
 import pt.ist.fenixframework.DomainObject;
 
@@ -29,7 +30,7 @@ public class FileStorageConfiguration extends FileStorageConfiguration_Base {
                 return fileStorageConfiguration.getStorage();
             }
         }
-        return null;
+        throw FileSupportException.noStorageForType(fileType);
     }
 
     public static void createMissingStorageConfigurations() {
