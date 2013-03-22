@@ -13,6 +13,5 @@ package pt.ist.bennu.search;
  * @author Paulo Abrantes
  */
 public interface IndexableField {
-
     public String getFieldName();
 }

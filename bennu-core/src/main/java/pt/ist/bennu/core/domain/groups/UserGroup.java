@@ -24,45 +24,118 @@
 */
 package pt.ist.bennu.core.domain.groups;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
-import pt.ist.bennu.core.domain.MyOrg;
+import org.joda.time.DateTime;
+
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
+
+import com.google.common.base.Function;
+import com.google.common.base.Joiner;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Sets;
 
 /**
+ * Groups of specific users.
  * 
- * @author Luis Cruz
- * 
+ * @see BennuGroup
  */
 public class UserGroup extends UserGroup_Base {
-
-    private UserGroup() {
+    protected UserGroup(Set<User> users) {
         super();
-        final MyOrg myOrg = getMyOrg();
-        setSystemGroupMyOrg(myOrg);
+        getMemberSet().addAll(users);
     }
 
     @Override
-    public boolean isMember(final User user) {
-        return user != null;
-    }
+    public String getPresentationName() {
+        Iterable<String> usernames = Iterables.transform(getMemberSet(), new Function<User, String>() {
+            @Override
+            public String apply(User user) {
+                return user.getUsername();
+            }
+        });
 
-    @Service
-    public static UserGroup getInstance() {
-        final UserGroup userGroup = (UserGroup) PersistentGroup.getSystemGroup(UserGroup.class);
-        return userGroup == null ? new UserGroup() : userGroup;
+        return Joiner.on(", ").join(usernames);
     }
 
     @Override
-    public String getName() {
-        return BundleUtil.getStringFromResourceBundle("resources/MyorgResources", "label.persistent.group.userGroup.name");
+    public String expression() {
+        Iterable<String> usernames = Iterables.transform(getMemberSet(), new Function<User, String>() {
+            @Override
+            public String apply(User user) {
+                return user.getUsername();
+            }
+        });
+
+        return "U(" + Joiner.on(", ").join(usernames) + ")";
     }
 
     @Override
     public Set<User> getMembers() {
-        return getMyOrg().getUserSet();
+        return getMemberSet();
     }
 
+    @Override
+    public boolean isMember(User user) {
+        return getMemberSet().contains(user);
+    }
+
+    @Override
+    public Set<User> getMembers(DateTime when) {
+        return getMembers();
+    }
+
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        return isMember(user);
+    }
+
+    @Override
+    public UserGroup grant(User user) {
+        Set<User> users = new HashSet<>(getMemberSet());
+        users.add(user);
+        return UserGroup.getInstance(users);
+    }
+
+    @Override
+    public UserGroup revoke(User user) {
+        Set<User> users = new HashSet<>(getMemberSet());
+        users.remove(user);
+        return UserGroup.getInstance(users);
+    }
+
+    @Override
+    protected void gc() {
+        getMemberSet().clear();
+        super.gc();
+    }
+
+    /**
+     * @see #getInstance(Set)
+     */
+    @Service
+    public static UserGroup getInstance(User... users) {
+        return getInstance(new HashSet<>(Arrays.asList(users)));
+    }
+
+    /**
+     * Get or create instance of a {@link UserGroup} for the requested users
+     * 
+     * @param users the users to be part of the group
+     * @return {@link UserGroup} instance
+     */
+    @Service
+    public static UserGroup getInstance(final Set<User> users) {
+        UserGroup group = select(UserGroup.class, new Predicate<UserGroup>() {
+            @Override
+            public boolean apply(UserGroup input) {
+                return Sets.symmetricDifference(input.getMemberSet(), users).isEmpty();
+            }
+        });
+        return group != null ? group : new UserGroup(users);
+    }
 }

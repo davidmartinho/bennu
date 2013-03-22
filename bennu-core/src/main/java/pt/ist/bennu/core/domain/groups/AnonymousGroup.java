@@ -24,30 +24,38 @@
 */
 package pt.ist.bennu.core.domain.groups;
 
+import java.util.Collections;
 import java.util.Set;
 
-import pt.ist.bennu.core.domain.MyOrg;
+import org.joda.time.DateTime;
+
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
 
 /**
+ * Group for unauthenticated users.
  * 
- * @author Luis Cruz
- * 
+ * @see BennuGroup
  */
 public class AnonymousGroup extends AnonymousGroup_Base {
-
-    @Service
-    public static AnonymousGroup getInstance() {
-        final AnonymousGroup anonymousGroup = (AnonymousGroup) PersistentGroup.getSystemGroup(AnonymousGroup.class);
-        return anonymousGroup == null ? new AnonymousGroup() : anonymousGroup;
+    protected AnonymousGroup() {
+        super();
     }
 
-    public AnonymousGroup() {
-        super();
-        final MyOrg myOrg = getMyOrg();
-        setSystemGroupMyOrg(myOrg);
+    @Override
+    public String getPresentationName() {
+        return BundleUtil.getString("resources.BennuResources", "label.bennu.group.anonymous");
+    }
+
+    @Override
+    public String expression() {
+        return "anonymous";
+    }
+
+    @Override
+    public Set<User> getMembers() {
+        return Collections.emptySet();
     }
 
     @Override
@@ -56,13 +64,34 @@ public class AnonymousGroup extends AnonymousGroup_Base {
     }
 
     @Override
-    public Set<User> getMembers() {
-        return null;
+    public Set<User> getMembers(DateTime when) {
+        return getMembers();
     }
 
     @Override
-    public String getName() {
-        return BundleUtil.getStringFromResourceBundle("resources/MyorgResources", "label.persistent.group.anonymousGroup.name");
+    public boolean isMember(User user, DateTime when) {
+        return isMember(user);
     }
 
+    @Override
+    public BennuGroup not() {
+        return LoggedGroup.getInstance();
+    }
+
+    @Override
+    protected boolean isGarbageCollectable() {
+        // Singleton group, no point in delete
+        return false;
+    }
+
+    /**
+     * Get or create singleton instance of {@link AnonymousGroup}
+     * 
+     * @return singleton {@link AnonymousGroup} instance
+     */
+    @Service
+    public static AnonymousGroup getInstance() {
+        AnonymousGroup group = select(AnonymousGroup.class);
+        return group == null ? new AnonymousGroup() : group;
+    }
 }

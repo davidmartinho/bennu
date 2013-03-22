@@ -24,111 +24,67 @@
 */
 package pt.ist.bennu.core.domain.exceptions;
 
-import java.util.ResourceBundle;
+import javax.ws.rs.core.Response.Status;
 
-import pt.ist.fenixframework.FFDomainException;
-import pt.utl.ist.fenix.tools.util.i18n.Language;
+import pt.ist.bennu.core.util.BundleUtil;
+
+import com.google.gson.JsonObject;
 
 /**
+ * <p>
+ * {@code DomainException}s indicate expected error conditions that can presented.
+ * </p>
  * 
- * @author João Antunes
- * @author Pedro Santos
- * @author Sérgio Silva
- * @author Paulo Abrantes
- * @author Luis Cruz
- * 
+ * <p>
+ * The presentation of these exceptions is ensured by {@link BundleUtil#getString(String, String, String...)} based on resource
+ * bundle parameters collected at construction time.
+ * </p>
  */
-public class DomainException extends FFDomainException {
-
+public class DomainException extends RuntimeException {
     private final String key;
 
     private final String[] args;
 
-    private final ResourceBundle bundle;
+    private final String bundle;
 
-    public DomainException() {
-        this(null, (String[]) null);
+    private final Status status;
+
+    protected DomainException(String bundle, String key, String... args) {
+        this(Status.INTERNAL_SERVER_ERROR, bundle, key, args);
     }
 
-    public DomainException(final String key, final String... args) {
+    protected DomainException(Status status, String bundle, String key, String... args) {
         super(key);
-        this.key = key;
-        this.args = args;
-        this.bundle = null;
-    }
-
-    public DomainException(final String key, final ResourceBundle bundle, final String... args) {
-        super(key);
-        this.key = key;
+        this.status = status;
         this.bundle = bundle;
+        this.key = key;
         this.args = args;
     }
 
-    public DomainException(final String key, final Throwable cause, final String... args) {
-        super(key, cause);
-        this.key = key;
-        this.args = args;
-        this.bundle = null;
+    protected DomainException(Throwable cause, String bundle, String key, String... args) {
+        this(cause, Status.INTERNAL_SERVER_ERROR, bundle, key, args);
     }
 
-    public DomainException(final String key, final Throwable cause, final ResourceBundle bundle, final String... args) {
+    protected DomainException(Throwable cause, Status status, String bundle, String key, String... args) {
         super(key, cause);
-        this.key = key;
-        this.args = args;
+        this.status = status;
         this.bundle = bundle;
-    }
-
-    public String getKey() {
-        return key;
-    }
-
-    public String[] getArgs() {
-        return args;
-    }
-
-    public ResourceBundle getBundle() {
-        return bundle;
+        this.key = key;
+        this.args = args;
     }
 
     @Override
     public String getLocalizedMessage() {
-        if (getBundle() == null) {
-            return getMessage();
-        }
-        String toReturn = null;
-        try {
-            toReturn = (getArgs() != null) ? getFormattedStringFromResourceBundle() : getStringFromResourceBundle();
-        } catch (java.util.MissingResourceException exception) {
-            toReturn = getMessage();
-        }
-        return toReturn;
+        return BundleUtil.getString(bundle, key, args);
     }
 
-    /*
-     * This actually has been copied from pt.ist.bennu.core.util.BundleUtil because we don't
-     * want to add such deppency to DomainException. Although this code should
-     * be refactored to a generic util, so it would be delegated instead of
-     * being repeated.
-     * 
-     * PS: This code is repeated because bundleUtil deppends of
-     * MultiLanguateString for example. And both me and LC felt that it made no
-     * sns
-     */
-    private String getStringFromResourceBundle() {
-        return getBundle().getString(getKey());
+    public Status getResponseStatus() {
+        return status;
     }
 
-    private String getFormattedStringFromResourceBundle() {
-        String resourceString = getStringFromResourceBundle();
-        String[] arguments = getArgs();
-        for (int i = 0; i < arguments.length; i++) {
-            resourceString = resourceString.replace("{" + i + "}", arguments[i]);
-        }
-        return resourceString;
+    public JsonObject asJson() {
+        JsonObject json = new JsonObject();
+        json.addProperty("message", getLocalizedMessage());
+        return json;
     }
-
-    public static ResourceBundle getResourceFor(String resourceName) {
-        return ResourceBundle.getBundle(resourceName, Language.getLocale());
-    }
-
 }

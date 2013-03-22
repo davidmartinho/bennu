@@ -24,16 +24,10 @@
  */
 package pt.ist.fenixframework;
 
-import pt.ist.bennu.core._development.PropertiesManager;
-import pt.ist.fenixWebFramework.FenixWebFramework;
+import pt.ist.bennu.core.util.ConfigurationManager;
 
-/**
- * 
- * @author Luis Cruz
- * 
- */
 public class FenixFrameworkInitializer {
     static {
-        FenixWebFramework.bootStrap(PropertiesManager.getFenixFrameworkConfig());
+        FenixFramework.bootStrap(ConfigurationManager.getFenixFrameworkConfig());
     }
 }

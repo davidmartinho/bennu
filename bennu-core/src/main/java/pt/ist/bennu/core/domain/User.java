@@ -22,31 +22,31 @@
 *   along with Bennu. If not, see <http://www.gnu.org/licenses/>. 
 *  
 */
+
 package pt.ist.bennu.core.domain;
 
 import java.util.Comparator;
+import java.util.Locale;
+import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang.RandomStringUtils;
-import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.bennu.core.domain.groups.IRoleEnum;
-import pt.ist.bennu.core.domain.groups.People;
-import pt.ist.bennu.core.domain.groups.Role;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.core.domain.exceptions.BennuCoreDomainException;
+import pt.ist.bennu.core.domain.groups.BennuGroup;
+import pt.ist.bennu.core.domain.groups.UserGroup;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
- * 
- * @author João Antunes
- * @author Anil Kassamali
- * @author Paulo Abrantes
- * @author Luis Cruz
- * @author Susana Fernandes
- * 
+ * The application end user.
  */
 public class User extends User_Base {
+    private static final Logger logger = LoggerFactory.getLogger(User.class);
 
     public interface UserPresentationStrategy {
         public String present(User user);
@@ -54,7 +54,7 @@ public class User extends User_Base {
         public String shortPresent(User user);
     }
 
-    public static final UserPresentationStrategy defaultStrategy = new UserPresentationStrategy() {
+    private static final UserPresentationStrategy defaultStrategy = new UserPresentationStrategy() {
 
         @Override
         public String present(User user) {
@@ -82,11 +82,29 @@ public class User extends User_Base {
     public User(final String username) {
         super();
         setUsername(username);
-        setMyOrg(MyOrg.getInstance());
+        setBennu(Bennu.getInstance());
+        setCreated(new DateTime());
+    }
+
+    /**
+     * @see #usersGroups()
+     */
+    @Override
+    public Set<UserGroup> getUserGroupSet() {
+        throw new UnsupportedOperationException();
+    }
+
+    public Iterable<UserGroup> usersGroups() {
+        return Iterables.filter(super.getUserGroupSet(), new Predicate<UserGroup>() {
+            @Override
+            public boolean apply(UserGroup group) {
+                return group.getHost().equals(VirtualHost.getVirtualHostForThread());
+            }
+        });
     }
 
     public static User findByUsername(final String username) {
-        for (final User user : MyOrg.getInstance().getUserSet()) {
+        for (final User user : Bennu.getInstance().getUsersSet()) {
             if (user.getUsername().equalsIgnoreCase(username)) {
                 return user;
             }
@@ -94,37 +112,6 @@ public class User extends User_Base {
         return null;
     }
 
-    public boolean hasRoleType(final RoleType roleType) {
-        for (final People people : getPeopleGroupsSet()) {
-            if (people instanceof Role) {
-                final Role role = (Role) people;
-                if (role.isRole(roleType) && role.isMember(this)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    public boolean hasRoleType(final String roleAsString) {
-        for (final People people : getPeopleGroupsSet()) {
-            if (people instanceof Role) {
-                final Role role = (Role) people;
-                if (role.getGroupName().equals(roleAsString) && role.isMember(this)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Service
-    @Override
-    public void setLastLogoutDateTime(final DateTime lastLogoutDateTime) {
-        super.setLastLogoutDateTime(lastLogoutDateTime);
-    }
-
-    @Service
     public void generatePassword() {
         final String password = RandomStringUtils.randomAlphanumeric(10);
         setPassword(password);
@@ -135,8 +122,7 @@ public class User extends User_Base {
         final String newHash = DigestUtils.sha512Hex(password);
         final String oldHash = getPassword();
         if (newHash.equals(oldHash)) {
-            throw new DomainException("message.error.bad.old.password",
-                    DomainException.getResourceFor("resources.MyorgResources"));
+            throw BennuCoreDomainException.badOldPassword();
         }
         super.setPassword(newHash);
     }
@@ -144,23 +130,6 @@ public class User extends User_Base {
     public boolean matchesPassword(final String password) {
         final String hash = DigestUtils.sha512Hex(password);
         return hash.equals(getPassword());
-    }
-
-    @Service
-    public static User createNewUser(final String username) {
-        return new User(username);
-    }
-
-    @Service
-    public void addRoleType(final IRoleEnum roleType) {
-        final Role role = Role.getRole(roleType);
-        addPeopleGroups(role);
-    }
-
-    @Service
-    @Override
-    public void removePeopleGroups(final People peopleGroups) {
-        super.removePeopleGroups(peopleGroups);
     }
 
     public String getPresentationName() {
@@ -172,20 +141,23 @@ public class User extends User_Base {
     }
 
     @Override
-    public String toString() {
-        return getUsername();
+    public Locale getPreferredLocale() {
+        Locale locale = super.getPreferredLocale();
+        if (locale != null) {
+            return locale;
+        }
+        return Locale.getDefault();
+    }
+
+    public Set<BennuGroup> accessibleGroups() {
+        return BennuGroup.userAccessibleGroups(this);
     }
 
     public static void registerUserPresentationStrategy(UserPresentationStrategy newStrategy) {
         if (strategy != defaultStrategy) {
-            Logger.getLogger(User.class).warn("Overriding non-default strategy");
+            logger.warn("Overriding non-default strategy");
         }
         strategy = newStrategy;
-    }
-
-    public void delete() {
-        removeMyOrg();
-        deleteDomainObject();
     }
 
     public PasswordRecoveryRequest createNewPasswordRecoveryRequest() {
@@ -193,4 +165,7 @@ public class User extends User_Base {
         return new PasswordRecoveryRequest(this);
     }
 
+    public boolean hasRole(String role) {
+        return false;
+    }
 }

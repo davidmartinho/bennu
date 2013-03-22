@@ -25,91 +25,100 @@
 package pt.ist.bennu.core.domain.groups;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.joda.time.DateTime;
 
-import pt.ist.bennu.core.domain.MyOrg;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 /**
+ * Union composition group.
  * 
- * @author João Antunes
- * @author Sérgio Silva
- * @author Luis Cruz
- * 
+ * @see BennuGroup
  */
 public class UnionGroup extends UnionGroup_Base {
-
-    public UnionGroup() {
+    protected UnionGroup(Set<BennuGroup> children) {
         super();
+        init(children);
     }
 
-    public UnionGroup(final PersistentGroup... persistentGroups) {
-        super();
-        for (final PersistentGroup persistentGroup : persistentGroups) {
-            addPersistentGroups(persistentGroup);
-        }
-    }
-
-    public UnionGroup(final Collection<PersistentGroup> persistentGroups) {
-        super();
-        for (final PersistentGroup persistentGroup : persistentGroups) {
-            addPersistentGroups(persistentGroup);
-        }
+    @Override
+    protected String operator() {
+        return "|";
     }
 
     @Override
     public Set<User> getMembers() {
-        final Set<User> users = new HashSet<User>();
-        for (final PersistentGroup persistentGroup : getPersistentGroupsSet()) {
-            users.addAll(persistentGroup.getMembers());
+        final Set<User> users = new HashSet<>();
+        for (final BennuGroup group : getChildrenSet()) {
+            users.addAll(group.getMembers());
         }
         return users;
     }
 
     @Override
-    public String getName() {
-        String groupName = "Union of: ";
-        for (Iterator persistentGroupIterator = getPersistentGroupsIterator(); persistentGroupIterator.hasNext();) {
-            PersistentGroup group = (PersistentGroup) persistentGroupIterator.next();
-            groupName = groupName.concat(group.getName());
-            if (persistentGroupIterator.hasNext()) {
-                groupName = groupName.concat(" AND ");
-            }
-        }
-        return groupName;
-    }
-
-    @Override
     public boolean isMember(final User user) {
-        for (final PersistentGroup persistentGroup : getPersistentGroupsSet()) {
-            if (persistentGroup.isMember(user)) {
+        for (final BennuGroup group : getChildrenSet()) {
+            if (group.isMember(user)) {
                 return true;
             }
         }
         return false;
     }
 
-    @Service
-    public static UnionGroup createUnionGroup(final PersistentGroup... persistentGroups) {
-        return new UnionGroup(persistentGroups);
+    @Override
+    public Set<User> getMembers(DateTime when) {
+        final Set<User> users = new HashSet<>();
+        for (final BennuGroup group : getChildrenSet()) {
+            users.addAll(group.getMembers(when));
+        }
+        return users;
     }
 
-    public static UnionGroup getOrCreateUnionGroup(final PersistentGroup... persistentGroups) {
-        for (PersistentGroup group : MyOrg.getInstance().getPersistentGroups()) {
-            if (group instanceof UnionGroup) {
-                UnionGroup unionGroup = (UnionGroup) group;
-                if (CollectionUtils.isEqualCollection(unionGroup.getPersistentGroups(), Arrays.asList(persistentGroups))) {
-                    return unionGroup;
-                }
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        for (final BennuGroup group : getChildrenSet()) {
+            if (group.isMember(user, when)) {
+                return true;
             }
         }
-        return UnionGroup.createUnionGroup(persistentGroups);
+        return false;
     }
 
+    @Override
+    public BennuGroup or(BennuGroup group) {
+        Set<BennuGroup> children = new HashSet<>(getChildrenSet());
+        children.add(group);
+        return UnionGroup.getInstance(children);
+    }
+
+    /**
+     * @see #getInstance(Set)
+     */
+    @Service
+    public static UnionGroup getInstance(final BennuGroup... children) {
+        return getInstance(new HashSet<>(Arrays.asList(children)));
+    }
+
+    /**
+     * Get or create instance of a {@link UnionGroup} between the requested children.
+     * 
+     * @param children the groups to make a {@link UnionGroup} on.
+     * @return {@link UnionGroup} instance
+     */
+    @Service
+    public static UnionGroup getInstance(final Set<BennuGroup> children) {
+        UnionGroup group = select(UnionGroup.class, new Predicate<UnionGroup>() {
+            @Override
+            public boolean apply(UnionGroup input) {
+                return Sets.symmetricDifference(input.getChildrenSet(), children).isEmpty();
+            }
+        });
+        return group != null ? group : new UnionGroup(children);
+    }
 }

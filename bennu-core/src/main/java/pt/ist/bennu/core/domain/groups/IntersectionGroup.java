@@ -24,77 +24,116 @@
  */
 package pt.ist.bennu.core.domain.groups;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
+import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.commons.lang.StringUtils;
+import org.joda.time.DateTime;
 
 import pt.ist.bennu.core.domain.User;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Sets;
 
 /**
+ * Intersection composition group.
  * 
- * @author Susana Fernandes
- * 
+ * @see BennuGroup
  */
 public class IntersectionGroup extends IntersectionGroup_Base {
-
-    protected IntersectionGroup() {
+    protected IntersectionGroup(Set<BennuGroup> children) {
+        super();
+        init(children);
     }
 
-    public IntersectionGroup(final PersistentGroup... persistentGroups) {
-        super();
-        for (final PersistentGroup persistentGroup : persistentGroups) {
-            addPersistentGroups(persistentGroup);
-        }
-    }
-
-    public IntersectionGroup(final Collection<PersistentGroup> persistentGroupCollection) {
-        super();
-        for (PersistentGroup persistenGroup : persistentGroupCollection) {
-            addPersistentGroups(persistenGroup);
-        }
+    @Override
+    protected String operator() {
+        return "&";
     }
 
     @Override
     public Set<User> getMembers() {
-        final Set<User> users = new HashSet<User>();
-        if (hasAnyPersistentGroups()) {
-            users.addAll(getPersistentGroupsSet().iterator().next().getMembers());
-            for (final PersistentGroup persistentGroup : getPersistentGroupsSet()) {
-                users.retainAll(persistentGroup.getMembers());
+        final Set<User> users = new HashSet<>();
+        Iterator<BennuGroup> iterator = getChildrenSet().iterator();
+        if (iterator.hasNext()) {
+            users.addAll(iterator.next().getMembers());
+            while (iterator.hasNext()) {
+                users.retainAll(iterator.next().getMembers());
             }
         }
         return users;
     }
 
     @Override
-    public String getName() {
-        List<String> names = new ArrayList<String>();
-        for (PersistentGroup group : getPersistentGroups()) {
-            names.add("(" + group.getName() + ")");
-        }
-        return "Intersection of: ".concat(StringUtils.join(names, " AND "));
-    }
-
-    @Override
     public boolean isMember(final User user) {
-        if (getPersistentGroupsCount() == 0) {
+        if (getChildrenCount() == 0) {
             return false;
         }
-        for (final PersistentGroup persistentGroup : getPersistentGroupsSet()) {
-            if (!persistentGroup.isMember(user)) {
+        for (final BennuGroup group : getChildrenSet()) {
+            if (!group.isMember(user)) {
                 return false;
             }
         }
         return true;
     }
 
+    @Override
+    public Set<User> getMembers(DateTime when) {
+        final Set<User> users = new HashSet<>();
+        Iterator<BennuGroup> iterator = getChildrenSet().iterator();
+        if (iterator.hasNext()) {
+            users.addAll(iterator.next().getMembers(when));
+            while (iterator.hasNext()) {
+                users.retainAll(iterator.next().getMembers(when));
+            }
+        }
+        return users;
+    }
+
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        if (getChildrenCount() == 0) {
+            return false;
+        }
+        for (final BennuGroup group : getChildrenSet()) {
+            if (!group.isMember(user, when)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public BennuGroup and(BennuGroup group) {
+        Set<BennuGroup> children = new HashSet<>(getChildrenSet());
+        children.add(group);
+        return IntersectionGroup.getInstance(children);
+    }
+
+    /**
+     * @see #getInstance(Set)
+     */
     @Service
-    public static IntersectionGroup createIntersectionGroup(final PersistentGroup... persistentGroups) {
-        return new IntersectionGroup(persistentGroups);
+    public static IntersectionGroup getInstance(final BennuGroup... children) {
+        return getInstance(new HashSet<>(Arrays.asList(children)));
+    }
+
+    /**
+     * Get or create instance of a {@link IntersectionGroup} between the requested children.
+     * 
+     * @param children the groups to make a {@link IntersectionGroup} on.
+     * @return singleton {@link IntersectionGroup} instance
+     */
+    @Service
+    public static IntersectionGroup getInstance(final Set<BennuGroup> children) {
+        IntersectionGroup group = select(IntersectionGroup.class, new Predicate<IntersectionGroup>() {
+            @Override
+            public boolean apply(IntersectionGroup input) {
+                return Sets.symmetricDifference(input.getChildrenSet(), children).isEmpty();
+            }
+        });
+        return group != null ? group : new IntersectionGroup(children);
     }
 }

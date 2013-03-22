@@ -24,24 +24,38 @@
 */
 package pt.ist.bennu.core.domain.groups;
 
+import java.util.Collections;
 import java.util.Set;
 
-import pt.ist.bennu.core.domain.MyOrg;
+import org.joda.time.DateTime;
+
 import pt.ist.bennu.core.domain.User;
 import pt.ist.bennu.core.util.BundleUtil;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
 
 /**
+ * Group that always returns <code>true</code> on membership tests.
  * 
- * @author Luis Cruz
- * 
+ * @see BennuGroup
  */
 public class AnyoneGroup extends AnyoneGroup_Base {
-
-    private AnyoneGroup() {
+    protected AnyoneGroup() {
         super();
-        final MyOrg myOrg = getMyOrg();
-        setSystemGroupMyOrg(myOrg);
+    }
+
+    @Override
+    public String getPresentationName() {
+        return BundleUtil.getString("resources.BennuResources", "label.bennu.group.anyone");
+    }
+
+    @Override
+    public String expression() {
+        return "anyone";
+    }
+
+    @Override
+    public Set<User> getMembers() {
+        return Collections.emptySet();
     }
 
     @Override
@@ -49,20 +63,35 @@ public class AnyoneGroup extends AnyoneGroup_Base {
         return true;
     }
 
+    @Override
+    public Set<User> getMembers(DateTime when) {
+        return getMembers();
+    }
+
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        return isMember(user);
+    }
+
+    @Override
+    public BennuGroup not() {
+        return NobodyGroup.getInstance();
+    }
+
+    @Override
+    protected boolean isGarbageCollectable() {
+        // Singleton group, no point in delete
+        return false;
+    }
+
+    /**
+     * Get or create singleton instance of {@link AnyoneGroup}
+     * 
+     * @return singleton {@link AnyoneGroup} instance
+     */
     @Service
     public static AnyoneGroup getInstance() {
-        final AnyoneGroup anyoneGroup = (AnyoneGroup) PersistentGroup.getSystemGroup(AnyoneGroup.class);
-        return anyoneGroup == null ? new AnyoneGroup() : anyoneGroup;
+        AnyoneGroup group = select(AnyoneGroup.class);
+        return group == null ? new AnyoneGroup() : group;
     }
-
-    @Override
-    public String getName() {
-        return BundleUtil.getStringFromResourceBundle("resources/MyorgResources", "label.persistent.group.anyoneGroup.name");
-    }
-
-    @Override
-    public Set<User> getMembers() {
-        return null;
-    }
-
 }

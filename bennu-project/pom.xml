@@ -3,9 +3,9 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>pt.ist</groupId>
+	<groupId>pt.ist.bennu</groupId>
 	<artifactId>bennu-project</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<!-- "One POM to rule them all, -->
@@ -30,20 +30,23 @@
 		<requireMavenVersion.regex>[3.0.0,)</requireMavenVersion.regex>
 		<requireJavaVersion.regex>[1.7.0,)</requireJavaVersion.regex>
 
-		<!-- IT'S SAD, BUT... -->
-		<skipTests>true</skipTests>
+		<!-- IT'S NOT SAD, WE HAVE TESTS !!! :-D -->
+		<skipTests>false</skipTests>
 
 		<!-- ************************************************************************************************ -->
 		<!-- * DEPENDENCIES VERSIONS * -->
 		<!-- * Please keep this list sorted alphabetically or you will feel the wrath of a Bennu Developer * -->
 		<!-- ************************************************************************************************ -->
 		<version.antlr.antlr>2.7.2</version.antlr.antlr>
+		<version.org.antlr.antlr.runtime>3.4</version.org.antlr.antlr.runtime>
 		<version.axis.axis>1.4</version.axis.axis>
 		<version.cas.casclient>2.1.1</version.cas.casclient>
-		<version.com.google.guava.guava>12.0</version.com.google.guava.guava>
+		<version.com.google.guava.guava>14.0-rc3</version.com.google.guava.guava>
+		<version.com.google.code.gson.gson>2.2.2</version.com.google.code.gson.gson>
 		<version.com.google.gwt.gwt.user>2.3.0</version.com.google.gwt.gwt.user>
 		<version.com.google.soastation>1.0</version.com.google.soastation>
 		<version.com.googlecode.json.simple.json.simple>1.1.1</version.com.googlecode.json.simple.json.simple>
+		<version.com.lowagie.itext>4.2.0</version.com.lowagie.itext>
 		<version.com.javabib.javabib.bin>20040801</version.com.javabib.javabib.bin>
 		<version.com.oracle.ojdbc14>9.0.2.0.0</version.com.oracle.ojdbc14>
 		<version.com.sun.codemodel.codemodel>2.6</version.com.sun.codemodel.codemodel>
@@ -59,6 +62,7 @@
 		<version.commons.lang.commons.lang>2.6</version.commons.lang.commons.lang>
 		<version.commons.logging.commons.logging>1.1.1</version.commons.logging.commons.logging>
 		<version.informa.informa>1.0</version.informa.informa>
+		<version.javax.activation.activation>1.1.1</version.javax.activation.activation>
 		<version.javax.mail.mail>1.4.2</version.javax.mail.mail>
 		<version.javax.servlet.jstl>1.2</version.javax.servlet.jstl>
 		<version.javax.ws.rs.jsr311.api>1.1</version.javax.ws.rs.jsr311.api>
@@ -66,9 +70,9 @@
 		<version.jline.jline>0.9.94</version.jline.jline>
 		<version.joda.time.joda.time>1.5.2</version.joda.time.joda.time>
 		<version.joda.time.joda.time.jsptags>1.1.1</version.joda.time.joda.time.jsptags>
-		<version.log4j.log4j>1.2.16</version.log4j.log4j>
 		<version.jasperreports.jasperreports.javaflow>3.6.0</version.jasperreports.jasperreports.javaflow>
-		<version.org.apache.lucene.lucene.core>3.5.0</version.org.apache.lucene.lucene.core>
+		<version.log4j.log4j>1.2.16</version.log4j.log4j>
+		<version.org.apache.lucene.lucene.core>3.6.1</version.org.apache.lucene.lucene.core>
 		<version.org.apache.pdfbox.pdfbox>1.6.0</version.org.apache.pdfbox.pdfbox>
 		<version.org.apache.poi.poi>3.5-beta5</version.org.apache.poi.poi>
 		<version.org.apache.poi.poi.contrib>3.5-beta5</version.org.apache.poi.poi.contrib>
@@ -80,6 +84,8 @@
 		<version.org.jvnet.mimepull>1.4</version.org.jvnet.mimepull>
 		<version.org.mozilla.rhino>1.7R4</version.org.mozilla.rhino>
 		<version.org.restlet.jee.org.restlet>2.0.14</version.org.restlet.jee.org.restlet>
+		<version.org.slf4j.slf4j.api>1.7.2</version.org.slf4j.slf4j.api>
+		<version.org.slf4j.slf4j.log4j12>1.7.2</version.org.slf4j.slf4j.log4j12>
 		<version.surftheedge.mjava>1.0</version.surftheedge.mjava>
 
 		<!-- ************************************************************************************************ -->
@@ -92,12 +98,13 @@
 		<version.org.apache.maven.plugins.maven.deploy.plugin>2.7</version.org.apache.maven.plugins.maven.deploy.plugin>
 		<version.org.apache.maven.plugins.maven.enforcer.plugin>1.1.1</version.org.apache.maven.plugins.maven.enforcer.plugin>
 		<version.org.apache.maven.plugins.maven.jar.plugin>2.4</version.org.apache.maven.plugins.maven.jar.plugin>
-		<version.org.apache.maven.plugins.maven.resources.plugin>2.5</version.org.apache.maven.plugins.maven.resources.plugin>
+		<version.org.apache.maven.plugins.maven.resources.plugin>2.6</version.org.apache.maven.plugins.maven.resources.plugin>
 		<version.org.apache.maven.plugins.maven.source.plugin>2.1.2</version.org.apache.maven.plugins.maven.source.plugin>
 		<version.org.apache.maven.plugins.maven.surefire.plugin>2.12.4</version.org.apache.maven.plugins.maven.surefire.plugin>
 		<version.org.apache.maven.plugins.maven.war.plugin>2.3</version.org.apache.maven.plugins.maven.war.plugin>
 		<version.org.codehaus.mojo.axistools.maven.plugin>1.4</version.org.codehaus.mojo.axistools.maven.plugin>
-		<version.pt.ist.bennu.maven.plugin>1.1-SNAPSHOT</version.pt.ist.bennu.maven.plugin>
+		<version.maven.antlr-plugin>3.4</version.maven.antlr-plugin>
+		<version.pt.ist.bennu.maven-bennu-plugin>2.0-SNAPSHOT</version.pt.ist.bennu.maven-bennu-plugin>
 	</properties>
 
 	<build>
@@ -139,7 +146,7 @@
 				<version>${version.org.apache.maven.plugins.maven.resources.plugin}</version>
 				<executions>
 					<execution>
-						<id>copy-resources</id>
+						<id>copy-webapp</id>
 						<phase>validate</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -152,20 +159,6 @@
 									<excludes>
 										<exclude>WEB-INF/web.xml</exclude>
 									</excludes>
-								</resource>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>false</filtering>
-									<excludes>
-										<exclude>build.properties</exclude>
-									</excludes>
-								</resource>
-								<resource>
-									<directory>src/main/resources</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>build.properties</include>
-									</includes>
 								</resource>
 							</resources>
 						</configuration>
@@ -216,9 +209,9 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>pt.ist</groupId>
-				<artifactId>bennu-maven-plugin</artifactId>
-				<version>${version.pt.ist.bennu.maven.plugin}</version>
+				<groupId>pt.ist.bennu</groupId>
+				<artifactId>maven-bennu-plugin</artifactId>
+				<version>${version.pt.ist.bennu.maven-bennu-plugin}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -256,6 +249,8 @@
 						</manifestEntries>
 					</archive>
 					<excludes>
+						<exclude>log4j.properties*</exclude>
+						<exclude>configuration.properties</exclude>
 						<exclude>**/*_Base*</exclude>
 						<exclude>**/pt/ist/fenixframework/ValueTypeSerializationGenerator*</exclude>
 					</excludes>
@@ -305,6 +300,18 @@
 						</execution>
 					</executions>
 				</plugin>
+				<plugin>
+					<groupId>org.antlr</groupId>
+					<artifactId>antlr3-maven-plugin</artifactId>
+					<version>${version.maven.antlr-plugin}</version>
+					<executions>
+						<execution>
+							<goals>
+								<goal>antlr</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -315,6 +322,20 @@
 			<artifactId>tomcat-servlet-api</artifactId>
 			<version>${version.org.apache.tomcat.tomcat.servlet.api}</version>
 			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>${version.org.slf4j.slf4j.api}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<version>${version.org.slf4j.slf4j.log4j12}</version>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
 		</dependency>
 	</dependencies>
 
@@ -329,6 +350,11 @@
 				<groupId>com.googlecode.json-simple</groupId>
 				<artifactId>json-simple</artifactId>
 				<version>${version.com.googlecode.json.simple.json.simple}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.lowagie</groupId>
+				<artifactId>itext</artifactId>
+				<version>${version.com.lowagie.itext}</version>
 			</dependency>
 			<dependency>
 				<groupId>com.sun.jersey</groupId>
@@ -480,6 +506,11 @@
 				<version>${version.com.google.guava.guava}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${version.com.google.code.gson.gson}</version>
+			</dependency>
+			<dependency>
 				<groupId>joda-time</groupId>
 				<artifactId>joda-time</artifactId>
 				<version>${version.joda.time.joda.time}</version>
@@ -544,6 +575,16 @@
 				<artifactId>axis</artifactId>
 				<version>${version.axis.axis}</version>
 			</dependency>
+			<dependency>
+				<groupId>org.antlr</groupId>
+				<artifactId>antlr-runtime</artifactId>
+				<version>${version.org.antlr.antlr.runtime}</version>
+			</dependency>
+			<dependency>
+				<groupId>javax.activation</groupId>
+				<artifactId>activation</artifactId>
+				<version>${version.javax.activation.activation}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -556,9 +597,6 @@
 						<groupId>dml</groupId>
 						<artifactId>dml-maven-plugin</artifactId>
 						<version>${version.dml.dml.maven.plugin}</version>
-						<configuration>
-							<codeGeneratorClassName>pt.ist.fenixframework.pstm.dml.VirtualHostAwareCodeGenerator</codeGeneratorClassName>
-						</configuration>
 						<executions>
 							<execution>
 								<id>default</id>
@@ -574,7 +612,7 @@
 						<artifactId>maven-war-plugin</artifactId>
 						<version>${version.org.apache.maven.plugins.maven.war.plugin}</version>
 						<configuration>
-							<packagingExcludes>**/web-fragment.xml</packagingExcludes>
+							<failOnMissingWebXml>false</failOnMissingWebXml>
 						</configuration>
 						<executions>
 							<execution>
@@ -587,9 +625,9 @@
 						</executions>
 					</plugin>
 					<plugin>
-						<groupId>pt.ist</groupId>
-						<artifactId>bennu-maven-plugin</artifactId>
-						<version>${version.pt.ist.bennu.maven.plugin}</version>
+						<groupId>pt.ist.bennu</groupId>
+						<artifactId>maven-bennu-plugin</artifactId>
+						<version>${version.pt.ist.bennu.maven-bennu-plugin}</version>
 						<configuration>
 							<webFragment>src/main/webapp/WEB-INF/web.xml</webFragment>
 						</configuration>
@@ -599,6 +637,31 @@
 									<goal>update-web-fragment</goal>
 									<goal>post-compile</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>${version.org.apache.maven.plugins.maven.resources.plugin}</version>
+						<executions>
+							<execution>
+								<id>copy-webapp</id>
+								<phase>validate</phase>
+								<goals>
+									<goal>copy-resources</goal>
+								</goals>
+								<configuration>
+									<outputDirectory>${basedir}/target/classes</outputDirectory>
+									<resources>
+										<resource>
+											<directory>src/main/webapp</directory>
+											<excludes>
+												<exclude>**/*</exclude>
+											</excludes>
+										</resource>
+									</resources>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>

@@ -24,42 +24,89 @@
 */
 package pt.ist.bennu.core.domain.groups;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import org.joda.time.DateTime;
+
+import pt.ist.bennu.core.domain.Bennu;
 import pt.ist.bennu.core.domain.User;
-import pt.ist.bennu.core.domain.exceptions.DomainException;
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.core.util.BundleUtil;
+import pt.ist.bennu.service.Service;
+
+import com.google.common.base.Predicate;
 
 /**
+ * Inverse group of another group.
  * 
- * @author João Antunes
- * @author Susana Fernandes
- * 
+ * @see BennuGroup
  */
 public class NegationGroup extends NegationGroup_Base {
-
-    public NegationGroup(PersistentGroup persistentGroup) {
+    protected NegationGroup(BennuGroup negated) {
         super();
-        setPersistentGroup(persistentGroup);
+        setNegationVirtualHost(getHost());
+        setNegated(negated);
+    }
+
+    @Override
+    public String getPresentationName() {
+        return BundleUtil.getString("resources.BennuResources", "label.bennu.group.negation", getNegated().getPresentationName());
+    }
+
+    @Override
+    public String expression() {
+        return "! " + getNegated().expression();
     }
 
     @Override
     public Set<User> getMembers() {
-        throw new DomainException();
-    }
-
-    @Override
-    public String getName() {
-        return ("NOT " + getPersistentGroup().getName());
+        Set<User> users = new HashSet<>(Bennu.getInstance().getUsersSet());
+        users.removeAll(getNegated().getMembers());
+        return users;
     }
 
     @Override
     public boolean isMember(User user) {
-        return !getPersistentGroup().isMember(user);
+        return !getNegated().isMember(user);
     }
 
+    @Override
+    public Set<User> getMembers(DateTime when) {
+        Set<User> users = new HashSet<>(Bennu.getInstance().getUsersSet());
+        users.removeAll(getNegated().getMembers(when));
+        return users;
+    }
+
+    @Override
+    public boolean isMember(User user, DateTime when) {
+        return !getNegated().isMember(user, when);
+    }
+
+    @Override
+    public BennuGroup not() {
+        return getNegated();
+    }
+
+    @Override
+    protected void gc() {
+        removeNegated();
+        super.gc();
+    }
+
+    /**
+     * Get or create singleton instance of {@link NegationGroup}
+     * 
+     * @param group the group to inverse
+     * @return singleton {@link NegationGroup} instance
+     */
     @Service
-    public static NegationGroup createNegationGroup(final PersistentGroup persistentGroup) {
-        return new NegationGroup(persistentGroup);
+    public static NegationGroup getInstance(final BennuGroup group) {
+        NegationGroup negated = select(NegationGroup.class, new Predicate<NegationGroup>() {
+            @Override
+            public boolean apply(NegationGroup input) {
+                return input.getNegated().equals(group);
+            }
+        });
+        return negated != null ? negated : new NegationGroup(negated);
     }
 }

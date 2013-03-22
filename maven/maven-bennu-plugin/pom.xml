@@ -1,17 +1,25 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<name>Bennu Maven Plugin</name>
 
-	<groupId>pt.ist</groupId>
+	<groupId>pt.ist.bennu</groupId>
 	<artifactId>maven-bennu-plugin</artifactId>
 	<packaging>maven-plugin</packaging>
-	<version>1.1-SNAPSHOT</version>
+	<version>2.0-SNAPSHOT</version>
+	<name>Bennu Maven Plugin</name>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<java.compilation.source.version>1.7</java.compilation.source.version>
+		<java.compilation.target.version>1.7</java.compilation.target.version>
+
 		<version.org.apache.maven>3.0.3</version.org.apache.maven>
-		<version.commons.io.commons.io>1.4</version.commons.io.commons.io>
+		<version.org.apache.maven.plugins.maven.compiler.plugin>2.5.1</version.org.apache.maven.plugins.maven.compiler.plugin>
+		<version.com.google.guava.guava>12.0</version.com.google.guava.guava>
+
+		<skipTests>true</skipTests>
 	</properties>
 
 	<build>
@@ -19,10 +27,10 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.5.1</version>
+				<version>${version.org.apache.maven.plugins.maven.compiler.plugin}</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>${java.compilation.source.version}</source>
+					<target>${java.compilation.target.version}</target>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -35,9 +43,9 @@
 			<version>${version.org.apache.maven}</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>${version.commons.io.commons.io}</version>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>${version.com.google.guava.guava}</version>
 		</dependency>
 	</dependencies>
 

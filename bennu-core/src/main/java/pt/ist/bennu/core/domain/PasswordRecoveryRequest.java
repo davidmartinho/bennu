@@ -27,7 +27,7 @@ package pt.ist.bennu.core.domain;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.joda.time.DateTime;
 
-import pt.ist.fenixWebFramework.services.Service;
+import pt.ist.bennu.service.Service;
 
 /**
  * 

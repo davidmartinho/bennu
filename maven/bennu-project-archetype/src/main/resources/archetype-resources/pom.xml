@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>pt.ist</groupId>
+		<groupId>pt.ist.bennu</groupId>
 		<artifactId>bennu-project</artifactId>
-		<version>${parentVersion}</version>
+		<version>${coreVersion}</version>
 	</parent>
 
 	<groupId>${groupId}</groupId>
@@ -16,23 +16,34 @@
 
 	<name>${UpperCamelCaseProjectName}</name>
 
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<pt.ist.bennu.bennu-core.version>${coreVersion}</pt.ist.bennu.bennu-core.version>
+	</properties>
+
 	<dependencies>
-		<!-- PLACE YOUR BENNU PROJECT DEPENDENCIES HERE -->
+		<dependency>
+			<groupId>pt.ist.bennu</groupId>
+			<artifactId>bennu-core</artifactId>
+			<version>${pt.ist.bennu.bennu-core.version}</version>
+		</dependency>
+		<!--  PLACE YOUR BENNU PROJECT DEPENDENCIES HERE -->
 	</dependencies>
 
 	<repositories>
-		#if($privateProject == "true" || $privateProject == "t" ||
-		$privateProject == "yes" || $privateProject == "YES" || $privateProject
-		== "y" || $privateProject == "Y" || $privateProject == "TRUE")
+#if($privateProject == "true" || $privateProject == "t" ||
+	$privateProject == "yes" || $privateProject == "YES" || $privateProject
+	== "y" || $privateProject == "Y" || $privateProject == "TRUE")
 		<repository>
 			<id>fenix-ashes-private</id>
 			<url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-private</url>
 		</repository>
-		#else
+#else
 		<repository>
 			<id>fenix-ashes-maven-repository</id>
 			<url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
 		</repository>
-		#end
+#end
 	</repositories>
+	
 </project>
