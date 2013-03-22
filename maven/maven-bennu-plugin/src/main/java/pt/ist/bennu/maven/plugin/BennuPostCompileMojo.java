@@ -1,4 +1,4 @@
-package pt.ist.bennu.plugin;
+package pt.ist.bennu.maven.plugin;
 
 import java.io.File;
 import java.io.IOException;
