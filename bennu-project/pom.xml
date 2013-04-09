@@ -35,7 +35,8 @@
 
 		<!-- ************************************************************************************************ -->
 		<!-- * DEPENDENCIES VERSIONS * -->
-		<!-- * Please keep this list sorted alphabetically or you will feel the wrath of a Bennu Developer * -->
+		<!-- * Please keep this list sorted alphabetically or you will feel the 
+			wrath of a Bennu Developer * -->
 		<!-- ************************************************************************************************ -->
 		<version.antlr.antlr>2.7.2</version.antlr.antlr>
 		<version.org.antlr.antlr.runtime>3.4</version.org.antlr.antlr.runtime>
@@ -90,7 +91,8 @@
 
 		<!-- ************************************************************************************************ -->
 		<!-- * PLUGIN VERSIONS * -->
-		<!-- * Please keep this list sorted alphabetically or you will feel the wrath of a Bennu Developer * -->
+		<!-- * Please keep this list sorted alphabetically or you will feel the 
+			wrath of a Bennu Developer * -->
 		<!-- ************************************************************************************************ -->
 		<version.com.alexnederlof.jasperreports.plugin>1.5-SNAPSHOT</version.com.alexnederlof.jasperreports.plugin>
 		<version.dml.dml.maven.plugin>1.2.1</version.dml.dml.maven.plugin>
@@ -103,6 +105,7 @@
 		<version.org.apache.maven.plugins.maven.surefire.plugin>2.12.4</version.org.apache.maven.plugins.maven.surefire.plugin>
 		<version.org.apache.maven.plugins.maven.war.plugin>2.3</version.org.apache.maven.plugins.maven.war.plugin>
 		<version.org.codehaus.mojo.axistools.maven.plugin>1.4</version.org.codehaus.mojo.axistools.maven.plugin>
+		<version.org.mortbay.jetty.jetty.maven.plugin>8.1.8.v20121106</version.org.mortbay.jetty.jetty.maven.plugin>
 		<version.maven.antlr-plugin>3.4</version.maven.antlr-plugin>
 		<version.pt.ist.bennu.maven-bennu-plugin>2.0-SNAPSHOT</version.pt.ist.bennu.maven-bennu-plugin>
 	</properties>
@@ -179,7 +182,8 @@
 					</execution>
 				</executions>
 			</plugin>
-			<!-- Explicitly define maven-deploy-plugin after others that run on the same phase to force exec order -->
+			<!-- Explicitly define maven-deploy-plugin after others that run on the 
+				same phase to force exec order -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-deploy-plugin</artifactId>
@@ -590,6 +594,28 @@
 
 	<profiles>
 		<profile>
+			<id>dev</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.mortbay.jetty</groupId>
+						<artifactId>jetty-maven-plugin</artifactId>
+						<version>${version.org.mortbay.jetty.jetty.maven.plugin}</version>
+						<configuration>
+							<scanIntervalSeconds>10</scanIntervalSeconds>
+							<webApp>
+								<contextPath>/</contextPath>
+								<baseResource
+									implementation="org.eclipse.jetty.util.resource.ResourceCollection">
+									<resourcesAsCSV>${bennu.dev.resources}</resourcesAsCSV>
+								</baseResource>
+							</webApp>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
 			<id>war</id>
 			<build>
 				<plugins>
@@ -604,6 +630,20 @@
 									<goal>generate-domain</goal>
 									<goal>post-compile</goal>
 								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<!-- Since we're building a WAR no need for a JAR -->
+					<plugin>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>default-jar</id>
+								<phase>never</phase>
+								<configuration>
+									<finalName>unwanted</finalName>
+									<classifier>unwanted</classifier>
+								</configuration>
 							</execution>
 						</executions>
 					</plugin>
@@ -674,11 +714,6 @@
 		<repository>
 			<id>fenix-ashes-maven-repository</id>
 			<url>https://fenix-ashes.ist.utl.pt/nexus/content/groups/fenix-ashes-maven-repository</url>
-		</repository>
-		<repository>
-			<id>maven-restlet</id>
-			<name>Public online Restlet repository</name>
-			<url>http://maven.restlet.org</url>
 		</repository>
 	</repositories>
 
